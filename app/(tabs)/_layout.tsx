@@ -9,6 +9,9 @@ import styles, { vw, vh } from '../../assets/stylesheet';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Text, TouchableOpacity, View } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
+import { LinearGradient } from 'expo-linear-gradient';
+import { NGT_Inter_BodyMd_Med } from '@/assets/CustomText';
+import { NGHIACOLOR } from '@/assets/componentStyleSheet';
 
 
 export default function TabLayout() {
@@ -59,9 +62,8 @@ export default function TabLayout() {
 
   const TabBar = ({ state, navigation }: { state: any, navigation: any }) => {
     return (
-      <View style={[styles.flexRowEvenlyCenter, styles.gap1vw, { margin: insets.bottom ? insets.bottom : vw(4), borderRadius: vw(4), borderWidth: 1, borderColor: 'red', backgroundColor: 'rgba(0,0,0,0)' }]}>
+      <View style={[styles.flexRowEvenlyCenter, styles.gap1vw, { margin: insets.bottom ? insets.bottom : vw(4), borderRadius: vw(4), borderWidth: 1, borderColor: NGHIACOLOR.NghiaBrand800 as string, backgroundColor: NGHIACOLOR.NghiaTransparentDark30 as string }]}>
         {state.routes.map((route: { key: React.Key | null | undefined; name: any; }, index: number) => {
-          const label = route.name;
           const isFocused = state.index === index;
 
           const onPress = () => {
@@ -90,9 +92,18 @@ export default function TabLayout() {
               accessibilityState={isFocused ? { selected: true } : {}}
               onPress={onPress}
               onLongPress={onLongPress}
-              style={[styles.flexColCenter, styles.gap1vw, styles.padding4vw, styles.borderRadius3vw, { width: 'auto', minWidth: '20%' }]}>
-              <SvgXml xml={isFocused ? screens[index].activeIcon : screens[index].inactiveIcon} width={24} height={24} fill={Colors[colorScheme ?? 'light'].tint} />
-              <Text numberOfLines={1}>{label}</Text>
+              style={[styles.borderRadius3vw, styles.overflowHidden, styles.marginVertical2vw,]}
+            >
+              <LinearGradient
+                colors={['rgba(83, 56, 158, 1)', 'rgba(127, 86, 217, 1)']}
+                start={{ x: 0, y: 1 }}
+                end={{ x: 0.5, y: 0 }}
+                locations={[0, 1]}
+                style={[styles.flexColCenter, styles.gap1vw, styles.paddingH4vw, styles.paddingV2vw, { width: 'auto', minWidth: '20%' }]}
+              >
+                <SvgXml xml={isFocused ? screens[index].activeIcon : screens[index].inactiveIcon} width={24} height={24} />
+                <NGT_Inter_BodyMd_Med lineNumber={1} color='white'>{screens[index].title}</NGT_Inter_BodyMd_Med>
+              </LinearGradient>
             </TouchableOpacity>
           );
         })}
