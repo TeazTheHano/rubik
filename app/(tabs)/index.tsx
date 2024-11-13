@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, Image } from 'react-native'
+import { View, Text, ScrollView, Image, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { componentStyle, NGHIACOLOR } from '@/assets/componentStyleSheet'
 import styles, { vw } from '@/assets/stylesheet'
@@ -11,15 +11,16 @@ import { DefaultTheme, useNavigation } from '@react-navigation/native'
 export default function index() {
   const navigation = useNavigation()
   const [starNum, setStarNum] = React.useState(0)
+  const [bestMatchSelect, setBestMatchSelect] = React.useState(0)
 
   const lvlData = [
-    [ICON.lv1, 'Beginner', 'A05', 30, () => navigation.navigate('')],
-    [ICON.lv2, 'Intermediate', 'A05', 15, () => navigation.navigate('')],
-    [ICON.lv3, 'Expert', 'A012', 15, () => navigation.navigate('')],
+    [ICON.lv1, 'Beginner', 'AO5', 30, () => navigation.navigate('')],
+    [ICON.lv2, 'Intermediate', 'AO5', 15, () => navigation.navigate('')],
+    [ICON.lv3, 'Expert', 'AO12', 15, () => navigation.navigate('')],
   ]
 
   return (
-    <CLASS.SSBarWithSaveArea trans margin barContentStyle='light-content' bgColor={DefaultTheme.colors.background}>
+    <CLASS.SSBarWithSaveArea trans margin barContentStyle='light-content' bgColor={DefaultTheme.colors.background} barColor={DefaultTheme.colors.background}>
       <ScrollView style={[styles.paddingH4vw]}>
         <CLASS.ViewRowBetweenCenter style={[styles.paddingV2vw, styles.alignItemsStart]}>
           <View>
@@ -43,6 +44,36 @@ export default function index() {
             })
           }
         </CLASS.ViewCol>
+
+        <CLASS.ViewCol style={[styles.gap4vw, styles.marginVertical4vw, styles.paddingH4vw, styles.paddingV4vw, componentStyle.borderBrand800]}>
+          <CLASS.ViewRow style={[styles.flex1, styles.borderRadius2vw, styles.overflowHidden]}>
+
+            <CLASS.ViewGra800700 style={[styles.w50, styles.flexRowCenter, styles.paddingV3vw]}>
+              <CTEXT.NGT_Inter_HeaderLg_Med>Best match</CTEXT.NGT_Inter_HeaderLg_Med>
+            </CLASS.ViewGra800700>
+
+            <CLASS.ViewGra800700 style={[styles.w50, styles.flexRowCenter, styles.paddingV3vw, styles.gap4vw]}>
+              <TouchableOpacity
+                onPress={() => setBestMatchSelect(0)}
+                style={[styles.borderRadius2vw, styles.overflowHidden, styles.positionRelative]}>
+                <View style={[styles.positionAbsolute, styles.w100, styles.h100, { backgroundColor: bestMatchSelect != 0 ? NGHIACOLOR.NghiaTransparentDark30 : undefined, zIndex: 2 }]} />
+                <CLASS.ViewGra600500 style={[styles.paddingV1vw, styles.paddingH2vw,]}>
+                  <CTEXT.NGT_Inter_BodyLg_Med>AO5</CTEXT.NGT_Inter_BodyLg_Med>
+                </CLASS.ViewGra600500>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={() => setBestMatchSelect(1)}
+                style={[styles.borderRadius2vw, styles.overflowHidden, styles.positionRelative]}>
+                <View style={[styles.positionAbsolute, styles.w100, styles.h100, { backgroundColor: bestMatchSelect != 1 ? NGHIACOLOR.NghiaTransparentDark30 : undefined, zIndex: 2 }]} />
+                <CLASS.ViewGra600500 style={[styles.paddingV1vw, styles.paddingH2vw,]}>
+                  <CTEXT.NGT_Inter_BodyLg_Med>AO12</CTEXT.NGT_Inter_BodyLg_Med>
+                </CLASS.ViewGra600500>
+              </TouchableOpacity>
+            </CLASS.ViewGra800700>
+          </CLASS.ViewRow>
+        </CLASS.ViewCol>
+
         {marginBottomForScrollView()}
       </ScrollView>
     </CLASS.SSBarWithSaveArea>

@@ -1,6 +1,6 @@
 // system import
 import React, { Component, ComponentType, useState } from 'react';
-import { ImageBackground, Platform, SafeAreaView, StatusBar, Text, TextInput, TouchableOpacity, View, Image, ImageStyle, StatusBarStyle, ReturnKeyType, KeyboardType, FlatList, TextInputProps, Animated, Easing, TouchableOpacityProps, ViewProps } from 'react-native';
+import { ImageBackground, Platform, SafeAreaView, StatusBar, Text, TextInput, TouchableOpacity, View, Image, ImageStyle, StatusBarStyle, ReturnKeyType, KeyboardType, FlatList, TextInputProps, Animated, Easing, TouchableOpacityProps, ViewProps, ViewStyle } from 'react-native';
 
 // style import
 import styles from './stylesheet';
@@ -11,7 +11,7 @@ import { marginBottomForScrollView } from './component';
 
 // svg import
 import * as SVG from './svgXml';
-import clrStyle, { NGHIACOLOR, NGHIASTYLE } from './componentStyleSheet';
+import clrStyle, { componentStyle, NGHIACOLOR, NGHIASTYLE } from './componentStyleSheet';
 import { useNavigation } from '@react-navigation/native';
 import { CurrentCache } from '../data/store';
 import * as FormatData from '../data/interfaceFormat';
@@ -75,7 +75,7 @@ export class SaveViewWithColorStatusBar extends Component<{ children?: React.Rea
     }
 }
 
-export class ViewRow extends Component<{ children?: React.ReactNode, style?: ViewProps | any }> {
+export class ViewRow extends Component<{ children?: React.ReactNode, style?: (ViewStyle | ImageStyle)[] }> {
     render() {
         return (
             <View style={[styles.flexRow, this.props.style]}>
@@ -85,7 +85,7 @@ export class ViewRow extends Component<{ children?: React.ReactNode, style?: Vie
     }
 }
 
-export class ViewCol extends Component<{ children?: React.ReactNode, style?: ViewProps | any }> {
+export class ViewCol extends Component<{ children?: React.ReactNode, style?: (ViewStyle | ImageStyle)[] }> {
     render() {
         return (
             <View style={[styles.flexCol, this.props.style]}>
@@ -95,7 +95,7 @@ export class ViewCol extends Component<{ children?: React.ReactNode, style?: Vie
     }
 }
 
-export class ViewRowCenter extends Component<{ children?: React.ReactNode, style?: ViewProps | any }> {
+export class ViewRowCenter extends Component<{ children?: React.ReactNode, style?: (ViewStyle | ImageStyle)[] }> {
     render() {
         return (
             <View style={[styles.flexRowCenter, this.props.style]}>
@@ -105,7 +105,7 @@ export class ViewRowCenter extends Component<{ children?: React.ReactNode, style
     }
 }
 
-export class ViewColCenter extends Component<{ children?: React.ReactNode, style?: ViewProps | any }> {
+export class ViewColCenter extends Component<{ children?: React.ReactNode, style?: (ViewStyle | ImageStyle)[] }> {
     render() {
         return (
             <View style={[styles.flexColCenter, this.props.style]}>
@@ -115,7 +115,7 @@ export class ViewColCenter extends Component<{ children?: React.ReactNode, style
     }
 }
 
-export class ViewRowBetweenCenter extends Component<{ children?: React.ReactNode, style?: ViewProps | any }> {
+export class ViewRowBetweenCenter extends Component<{ children?: React.ReactNode, style?: (ViewStyle | ImageStyle)[] }> {
     render() {
         return (
             <View style={[styles.flexRowBetweenCenter, this.props.style]}>
@@ -125,7 +125,7 @@ export class ViewRowBetweenCenter extends Component<{ children?: React.ReactNode
     }
 }
 
-export class ViewColBetweenCenter extends Component<{ children?: React.ReactNode, style?: ViewProps | any }> {
+export class ViewColBetweenCenter extends Component<{ children?: React.ReactNode, style?: (ViewStyle | ImageStyle)[] }> {
     render() {
         return (
             <View style={[styles.flexColBetweenCenter, this.props.style]}>
@@ -135,7 +135,7 @@ export class ViewColBetweenCenter extends Component<{ children?: React.ReactNode
     }
 }
 
-export class ViewRowEvenlyCenter extends Component<{ children?: React.ReactNode, style?: ViewProps | any }> {
+export class ViewRowEvenlyCenter extends Component<{ children?: React.ReactNode, style?: (ViewStyle | ImageStyle)[] }> {
     render() {
         return (
             <View style={[styles.flexRowEvenlyCenter, this.props.style]}>
@@ -145,7 +145,7 @@ export class ViewRowEvenlyCenter extends Component<{ children?: React.ReactNode,
     }
 }
 
-export class ViewColEvenlyCenter extends Component<{ children?: React.ReactNode, style?: ViewProps | any }> {
+export class ViewColEvenlyCenter extends Component<{ children?: React.ReactNode, style?: (ViewStyle | ImageStyle)[] }> {
     render() {
         return (
             <View style={[styles.flexColEvenlyCenter, this.props.style]}>
@@ -155,7 +155,7 @@ export class ViewColEvenlyCenter extends Component<{ children?: React.ReactNode,
     }
 }
 
-export class ViewColEndCenter extends Component<{ children?: React.ReactNode, style?: ViewProps | any }> {
+export class ViewColEndCenter extends Component<{ children?: React.ReactNode, style?: (ViewStyle | ImageStyle)[] }> {
     render() {
         return (
             <View style={[styles.flexColEndCenter, this.props.style]}>
@@ -165,7 +165,7 @@ export class ViewColEndCenter extends Component<{ children?: React.ReactNode, st
     }
 }
 
-export class ViewRowStartCenter extends Component<{ children?: React.ReactNode, style?: ViewProps | any }> {
+export class ViewRowStartCenter extends Component<{ children?: React.ReactNode, style?: (ViewStyle | ImageStyle)[] }> {
     render() {
         return (
             <View style={[styles.flexRowStartCenter, this.props.style]}>
@@ -175,7 +175,7 @@ export class ViewRowStartCenter extends Component<{ children?: React.ReactNode, 
     }
 }
 
-export class ViewColStartCenter extends Component<{ children?: React.ReactNode, style?: ViewProps | any }> {
+export class ViewColStartCenter extends Component<{ children?: React.ReactNode, style?: (ViewStyle | ImageStyle)[] }> {
     render() {
         return (
             <View style={[styles.flexColStartCenter, this.props.style]}>
@@ -185,7 +185,7 @@ export class ViewColStartCenter extends Component<{ children?: React.ReactNode, 
     }
 }
 
-export class ViewColStartBetween extends Component<{ children?: React.ReactNode, style?: ViewProps | any }> {
+export class ViewColStartBetween extends Component<{ children?: React.ReactNode, style?: (ViewStyle | ImageStyle)[] }> {
     render() {
         return (
             <View style={[styles.flexCol, styles.justifyContentSpaceBetween, this.props.style]}>
@@ -582,19 +582,12 @@ export class LevelChoosing extends Component<{ icon: any, title: string, med: st
     render(): React.ReactNode {
         return (
             <ViewRowCenter style={[styles.positionRelative, { height: vw(18) }]}>
-                <View style={[styles.positionAbsolute, { zIndex: 2, left: 0 }]}>
-                    <LinearGradient
-                        colors={[NGHIACOLOR.NghiaPurple700, 'rgba(0,0,0,0)']}
-                        start={[0.5, 0.5]}
-                        end={[0.5, 0.5]}
-                        locations={[0, 1]}
-                    >
-                        {this.props.icon(vw(18), vw(18))}
-                    </LinearGradient>
+                <View style={[styles.positionAbsolute, componentStyle.outlineGlow, { zIndex: 2, left: 0 }]}>
+                    {this.props.icon(vw(18), vw(18))}
                 </View>
-                <ViewRowBetweenCenter style={[styles.w100, styles.paddingH4vw, { borderTopRightRadius: vw(100), borderBottomRightRadius: vw(100), marginLeft: vw(7), backgroundColor: NGHIACOLOR.NghiaTransparentWhite30 }]}>
+                <ViewRowBetweenCenter style={[styles.flex1, styles.paddingH4vw, { borderTopRightRadius: vw(100), borderBottomRightRadius: vw(100), marginLeft: vw(7), backgroundColor: NGHIACOLOR.NghiaTransparentWhite30 }]}>
                     <ViewRow>
-                        <View style={{ width: vw(12), height: vw(1) }} />
+                        <View style={{ width: vw(10), height: vw(1) }} />
                         <ViewCol style={[styles.gap1vw, styles.paddingV2vw]}>
                             <ViewRowStartCenter style={[styles.gap2vw]}>
                                 <CTEXT.NGT_Inter_BodyLg_SemiBold>{this.props.title}</CTEXT.NGT_Inter_BodyLg_SemiBold>
@@ -604,17 +597,79 @@ export class LevelChoosing extends Component<{ icon: any, title: string, med: st
                         </ViewCol>
                     </ViewRow>
                     <TouchableOpacity onPress={this.props.navAdd}>
-                        <LinearGradient
+                        {/* <LinearGradient
                             colors={['#53389E', '#7F56D9']}
                             start={[0, 0.5]}
                             end={[1, 0]}
                             style={[styles.paddingH6vw, styles.paddingV2vw, styles.borderRadius100,]}
-                        >
+                        > */}
+                        <ViewGra800600 style={[styles.paddingH6vw, styles.paddingV2vw, styles.borderRadius100,]}>
                             <CTEXT.NGT_Inter_BodyMd_Med>Play</CTEXT.NGT_Inter_BodyMd_Med>
-                        </LinearGradient>
+                        </ViewGra800600>
+                        {/* </LinearGradient> */}
                     </TouchableOpacity>
                 </ViewRowBetweenCenter>
             </ViewRowCenter>
         )
     }
 }
+
+export class MatchHistory extends Component<{ icon?: any, date: Date, time: TimeRanges }> {
+    render(): React.ReactNode {
+        return (
+            <ViewRowBetweenCenter>
+                <ViewRowStartCenter>
+
+                </ViewRowStartCenter>
+
+            </ViewRowBetweenCenter>
+        )
+    }
+}
+
+export class ViewGra800600 extends Component<{ children?: React.ReactNode, style?: (ViewStyle | ImageStyle)[] }> {
+    render(): React.ReactNode {
+        return (
+            <LinearGradient
+                colors={[NGHIACOLOR.NghiaBrand800, NGHIACOLOR.NghiaBrand600]}
+                start={[0, 0.2]}
+                end={[0.9, 0]}
+                style={this.props.style}
+            >
+                {this.props.children}
+            </LinearGradient>
+        )
+    }
+}
+
+export class ViewGra800700 extends Component<{ children?: React.ReactNode, style?: (ViewStyle | ImageStyle)[] }> {
+    render(): React.ReactNode {
+        return (
+            <LinearGradient
+                colors={[NGHIACOLOR.NghiaBrand800, NGHIACOLOR.NghiaBrand700]}
+                start={[0, 0]}
+                end={[0.43, 0.25]}
+                style={this.props.style}
+            >
+                {this.props.children}
+            </LinearGradient>
+        )
+    }
+}
+
+export class ViewGra600500 extends Component<{ children?: React.ReactNode, style?: (ViewStyle | ImageStyle)[] }> {
+    render(): React.ReactNode {
+        return (
+            <LinearGradient
+                colors={[NGHIACOLOR.NghiaBrand600, NGHIACOLOR.NghiaBrand500]}
+                start={[0, 0]}
+                end={[1, 1]}
+                style={this.props.style}
+            >
+                {this.props.children}
+            </LinearGradient>
+        )
+    }
+}
+
+

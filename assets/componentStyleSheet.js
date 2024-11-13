@@ -174,5 +174,13 @@ export const componentStyle = StyleSheet.create({
         borderWidth: 1,
         borderColor: NGHIACOLOR.NghiaBrand800,
         borderRadius: vw(3)
+    },
+
+    outlineGlow: {
+        shadowColor: NGHIACOLOR.NghiaPurple700,
+        shadowOffset: { width: vw(1.5), height: 0 },
+        shadowOpacity: 1,
+        shadowRadius: vw(2.5),
+        elevation: vw(2.5),
     }
 });
