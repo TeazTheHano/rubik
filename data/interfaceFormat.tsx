@@ -1,3 +1,10 @@
+export interface StorageItem {
+    user: UserFormat,
+    match: MatchHistoryFormat,
+    room: RoomFormat,
+    guide: GuideFormat
+}
+
 export interface UserFormat {
     synced?: boolean;
     name: string;
@@ -12,78 +19,27 @@ export interface UserFormat {
     }
 }
 
-export interface IndayNutriFormat {
-    nutri: NutriFormat;
-}
-
-export interface NutriFormat {
-    calo?: number;
-    carb?: number;
-    fat?: number;
-    protein?: number;
-    fiber?: number;
-    sugar?: number;
-}
-
-export interface ImgAddressFormat {
-    uri: any;
-}
-
-export interface ScheduleFormat {
-    date: Date | Date[];
-    reminder: boolean;
-}
-
-export interface ItemSpiceFormat {
-    name: string;
-    unit: string;
-}
-
-export interface ItemFormat {
-    name: string;
-    unit?: string;
-    amount?: number;
-    nutri?: NutriFormat;
-    info?: string | string[];
-    imgAddress?: ImgAddressFormat;
-    related?: ItemFormat[];
-    recipeRelated?: RecipeFormat[];
-}
-
-export interface RecipeFormat {
-    id: `${UserFormat['email']}-${string}`;
-    author?: UserFormat;
-    name: string;
-    info?: string;
-    imgAddress?: ImgAddressFormat;
-    nutri?: NutriFormat;
-    ingredients: [ItemFormat['name'], number][];
-    spice?: [ItemSpiceFormat['name'], number][];
-    serving?: number;
-    preTime?: number;
-    cookTime?: number;
-    steps: CookStepFormat[];
-    related?: RecipeFormat[];
-    cmt?: {
-        user: UserFormat;
-        content: string;
-        time: Date;
-        rate: number;
+export interface MatchHistoryFormat {
+    date: Date
+    time: {
+        start: number,
+        end: number
     }
+    lvl: 'Beginner' | 'Intermediate' | 'Expert'
+    rounds: {
+        start: number,
+        end: number
+    }[]
+    result: number
 }
 
-export interface CookStepFormat {
-    name: string;
-    steps: [string, ImgAddressFormat?][];
+export interface RoomFormat {
+    match: MatchHistoryFormat,
+    no: number,
+    pass: string | number,
+    public: boolean,
 }
 
-export interface MealFormat {
-    name: 'Bữa sáng' | 'Bữa trưa' | 'Bữa tối' | 'Khác';
-    totalNutri: NutriFormat;
-    recipes: RecipeFormat[];
-}
-
-export interface CateFoodFormat {
-    name: string;
-    items: string[];
+export interface GuideFormat {
+    title: string
 }

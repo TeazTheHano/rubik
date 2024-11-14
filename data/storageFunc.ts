@@ -29,6 +29,12 @@ const storage = new Storage({
 
 export default storage;
 
+
+// TODO: change it every project
+const ERROR_SAVE_MESSAGE = `Lưu không thành công`
+const ERROR_GET_MESSAGE = `Dữ liệu không tồn tại hoặc lấy dữ liệu không thành công`
+const ERROR_CLEAR_MESSAGE = `Xoá dữ liệu không thành công`
+
 /**
  * Saves the user data to storage.
  *
@@ -43,7 +49,7 @@ export const saveUser = async (data: FORMATDATA.UserFormat): Promise<boolean> =>
     });
     return true;
   } catch (error) {
-    Alert.alert('Failed to save user');
+    Alert.alert(ERROR_SAVE_MESSAGE);
     console.log('Failed to save user:', error);
     return false;
   }
@@ -86,156 +92,64 @@ export const removeUser = async (): Promise<boolean> => {
 
 // END OF DEFAULT STORAGE FUNCTIONS ______________________________________________________
 
-export const saveRecipeWithID = async (data: FORMATDATA.RecipeFormat, id: string): Promise<boolean> => {
+export const saveStorageItem = async <K extends keyof FORMATDATA.StorageItem>(key: K, item: FORMATDATA.StorageItem[K], id?: string): Promise<boolean> => {
   try {
     await storage.save({
-      key: 'recipe',
-      data: data,
-      id: id,
+      key,
+      data: item,
+      id,
     });
+    console.log(`Save successfully: ${key} - ${id}`);
+
     return true;
   } catch (error) {
-    Alert.alert('Failed to save recipe');
-    console.log('Failed to save recipe:', error);
+    console.error(`Failed to save ${key}`, error);
     return false;
   }
 }
 
-export const getRecipeList = async (): Promise<FORMATDATA.RecipeFormat[] | false> => {
+export const getStorageList = async <K extends keyof FORMATDATA.StorageItem>(key: K): Promise<FORMATDATA.StorageItem[K][] | false> => {
   try {
-    const ret: FORMATDATA.RecipeFormat[] = await storage.getAllDataForKey('recipe');
+    const ret: FORMATDATA.StorageItem[K][] = await storage.getAllDataForKey(key);
     return ret;
   } catch (error) {
-    console.log('Failed to get recipe list:', error);
+    console.log(`Failed to get ${key} list:`, error);
     return false;
   }
 }
 
-export const getRecipeById = async (id: string): Promise<FORMATDATA.RecipeFormat | false> => {
+export const getStorageItem = async <K extends keyof FORMATDATA.StorageItem>(key: K, id?: string): Promise<FORMATDATA.StorageItem[K] | false> => {
   try {
-    const ret: FORMATDATA.RecipeFormat = await storage.load({
-      key: 'recipe',
-      id: id,
+    const ret: FORMATDATA.StorageItem[K] = await storage.load({
+      key,
+      id,
     });
     return ret;
   } catch (error) {
-    console.log('Failed to get recipe by id:', error);
+    console.log(`Failed to get ${key} by id:`, error);
     return false;
   }
 }
 
-export const removeRecipeById = async (id: string): Promise<boolean> => {
+export const removeStorageItem = async <K extends keyof FORMATDATA.StorageItem>(key: K, id?: string): Promise<boolean> => {
   try {
     await storage.remove({
-      key: 'recipe',
-      id: id,
+      key,
+      id,
     });
     return true;
   } catch (error) {
-    console.log('Failed to remove recipe:', error);
+    console.log(`Failed to remove ${key}:`, error);
     return false;
   }
 }
 
-export const clearRecipeList = async (): Promise<boolean> => {
+export const clearStorage = async <K extends keyof FORMATDATA.StorageItem>(key: K): Promise<boolean> => {
   try {
-    await storage.clearMapForKey('recipe');
+    await storage.clearMapForKey(key);
     return true;
   } catch (error) {
-    console.log('Failed to clear recipe list:', error);
+    console.log(`Failed to clear ${key} list:`, error);
     return false;
   }
 }
-
-export const saveTodayNutri = async (data: FORMATDATA.NutriFormat): Promise<boolean> => {
-  try {
-    await storage.save({
-      key: 'todayNutri',
-      data: data,
-    });
-    return true;
-  } catch (error) {
-    Alert.alert('Failed to save today nutrition');
-    console.log('Failed to save today nutrition:', error);
-    return false;
-  }
-}
-
-export const getTodayNutri = async (): Promise<FORMATDATA.NutriFormat> => {
-  const defaultNutri: FORMATDATA.NutriFormat = {
-    calo: 0,
-    protein: 0,
-    carb: 0,
-    fat: 0,
-  };
-
-  try {
-    const ret: FORMATDATA.NutriFormat = await storage.load({
-      key: 'todayNutri',
-    });
-    return ret || defaultNutri;
-  } catch (error) {
-    console.log('Failed to get today nutrition:', error);
-    return defaultNutri;
-  }
-};
-
-export const AddRecipeToTodayNutri = async (id: string, nutri?: FORMATDATA.NutriFormat): Promise<boolean> => {
-  try {
-    let recipeNutri: FORMATDATA.NutriFormat;
-    if (nutri) {
-      recipeNutri = nutri;
-    } else {
-      let recipe = await getRecipeById(id);
-      if (!recipe || !recipe.nutri) {
-        return false;
-      } else {
-        recipeNutri = recipe.nutri;
-      }
-    }
-    const todayNutri = await getTodayNutri() as FORMATDATA.NutriFormat;
-    if (!todayNutri) {
-      return false;
-    }
-
-    todayNutri.calo = (todayNutri.calo || 0) + (recipeNutri.calo || 0);
-    todayNutri.protein = (todayNutri.protein || 0) + (recipeNutri.protein || 0);
-    todayNutri.carb = (todayNutri.carb || 0) + (recipeNutri.carb || 0);
-    todayNutri.fat = (todayNutri.fat || 0) + (recipeNutri.fat || 0);
-
-    await saveTodayNutri(todayNutri);
-    return true;
-  } catch (error) {
-    console.log('Failed to add recipe to today nutrition:', error);
-    return false;
-  }
-}
-
-export const saveGoalNutri = async (data: FORMATDATA.NutriFormat): Promise<boolean> => {
-  try {
-    await storage.save({
-      key: 'goalNutri',
-      data: data,
-    });
-    return true;
-  } catch (error) {
-    Alert.alert('Failed to save nutrition goal');
-    console.log('Failed to save nutrition goal:', error);
-    return false;
-  }
-}
-
-export const getGoalNutri = async (): Promise<FORMATDATA.NutriFormat> => {
-  const defaultNutri: FORMATDATA.NutriFormat = factoryData.targetNutri;
-
-  try {
-    const ret: FORMATDATA.NutriFormat = await storage.load({
-      key: 'goalNutri',
-    });
-    return ret || defaultNutri;
-  } catch (error) {
-    console.log('Failed to get nutrition goal:', error);
-    return defaultNutri;
-  }
-};
-

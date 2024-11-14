@@ -597,16 +597,9 @@ export class LevelChoosing extends Component<{ icon: any, title: string, med: st
                         </ViewCol>
                     </ViewRow>
                     <TouchableOpacity onPress={this.props.navAdd}>
-                        {/* <LinearGradient
-                            colors={['#53389E', '#7F56D9']}
-                            start={[0, 0.5]}
-                            end={[1, 0]}
-                            style={[styles.paddingH6vw, styles.paddingV2vw, styles.borderRadius100,]}
-                        > */}
                         <ViewGra800600 style={[styles.paddingH6vw, styles.paddingV2vw, styles.borderRadius100,]}>
                             <CTEXT.NGT_Inter_BodyMd_Med>Play</CTEXT.NGT_Inter_BodyMd_Med>
                         </ViewGra800600>
-                        {/* </LinearGradient> */}
                     </TouchableOpacity>
                 </ViewRowBetweenCenter>
             </ViewRowCenter>
