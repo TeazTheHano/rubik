@@ -355,3 +355,25 @@ export class NGT_Inter_BodyMd_ExtraBold extends Component<{ children: React.Reac
         )
     }
 }
+
+export class RobotoMonoReg12 extends Component<{ children: React.ReactNode, style?: any, lineNumber?: number, color?: any }> {
+    render() {
+        const { color, children, style, lineNumber } = this.props;
+        return (
+            <Text numberOfLines={lineNumber} style={[{ fontFamily: 'RobotoMono-Regular', color: this.props.color ? this.props.color : DefaultTheme.colors.text, fontSize: vw(3), lineHeight: vw(4.5) }, style]}>
+                {children}
+            </Text>
+        )
+    }
+}
+
+export class RobotoMonoReg14 extends Component<{ children: React.ReactNode, style?: any, lineNumber?: number, color?: any }> {
+    render() {
+        const { color, children, style, lineNumber } = this.props;
+        return (
+            <Text numberOfLines={lineNumber} style={[{ fontFamily: 'RobotoMono-Regular', color: this.props.color ? this.props.color : DefaultTheme.colors.text, fontSize: vw(3.5), lineHeight: vw(4.5) }, style]}>
+                {children}
+            </Text>
+        )
+    }
+}

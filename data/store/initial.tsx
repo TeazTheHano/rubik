@@ -10,7 +10,7 @@
 //     example: 'example'
 // };
 
-import { ItemFormat, NutriFormat, UserFormat } from "../interfaceFormat";
+import { UserFormat } from "../interfaceFormat";
 
 export interface CurrentCache {
     user: UserFormat;
@@ -18,7 +18,7 @@ export interface CurrentCache {
 
 export interface Action {
     type: string;
-    payload?: UserFormat | NutriFormat;
+    payload?: UserFormat ;
 }
 
 export const initialState: CurrentCache = {

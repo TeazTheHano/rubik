@@ -6,7 +6,6 @@ import { clearStorage, getStorageList, saveStorageItem } from '@/data/storageFun
 import { MatchHistoryFormat } from '@/data/interfaceFormat'
 
 export default function Setting() {
-  const [x, setX] = useState<any>()
 
   return (
     <CLASS.SSBarWithSaveArea trans margin barContentStyle='light-content' bgColor={DefaultTheme.colors.background} barColor={DefaultTheme.colors.background}>
@@ -25,7 +24,7 @@ export default function Setting() {
             start: generateRandomTime(),
             end: generateRandomTime(),
           })),
-          result: 123114,
+          result: Math.abs(generateRandomTime() - generateRandomTime()),
         };
 
         saveStorageItem('match', fakedata, `a${Math.round(Math.random() * 20)}`);
@@ -34,7 +33,7 @@ export default function Setting() {
       </TouchableOpacity>
       <TouchableOpacity onPress={async () => {
         try {
-          await clearStorage('x')
+          await clearStorage('match')
           console.log('done');
         } catch (error) {
           Alert.alert('shiet')

@@ -607,14 +607,19 @@ export class LevelChoosing extends Component<{ icon: any, title: string, med: st
     }
 }
 
-export class MatchHistory extends Component<{ icon?: any, date: Date, time: TimeRanges }> {
+export class MatchHistory extends Component<{ data: FormatData.MatchHistoryFormat, icon?: any, style?: any }> {
     render(): React.ReactNode {
+        let date = this.props.data.date
+        let length = this.props.data.result
         return (
-            <ViewRowBetweenCenter>
+            <ViewRowBetweenCenter style={[styles.w100, styles.paddingV1vw, { borderBottomWidth: 1, borderBlockColor: NGHIACOLOR.NghiaTransparentWhite30 }, this.props.style]}>
                 <ViewRowStartCenter>
-
+                    {this.props.icon ? this.props.icon : null}
+                    <CTEXT.NGT_Inter_BodyMd_Reg color={NGHIACOLOR.NghiaGray200}> {new Date(date).toLocaleDateString('vi-VN', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'narrow' })}</CTEXT.NGT_Inter_BodyMd_Reg>
                 </ViewRowStartCenter>
-
+                <CTEXT.RobotoMonoReg12 color={NGHIACOLOR.NghiaBrand300}>
+                    {`${Math.floor(length / 3600000)}:${`0${Math.floor((length % 3600000) / 60000)}`.slice(-2)}:${`0${Math.floor((length % 60000) / 1000)}`.slice(-2)}.${`00${length % 1000}`.slice(-3)}`}
+                </CTEXT.RobotoMonoReg12>
             </ViewRowBetweenCenter>
         )
     }

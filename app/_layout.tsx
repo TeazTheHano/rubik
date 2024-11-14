@@ -30,6 +30,7 @@ export default function RootLayout() {
     "Inter-MediumItalic": require('../assets/fonts/Inter-MediumItalic.ttf'),
     "Inter-SemiBoldItalic": require('../assets/fonts/Inter-SemiBoldItalic.ttf'),
     "Inter-Italic": require('../assets/fonts/Inter-Italic.ttf'),
+    "RobotoMono-Regular": require('../assets/fonts/RobotoMono-Regular.ttf'),
   });
 
   useEffect(() => {
@@ -46,6 +47,7 @@ export default function RootLayout() {
     <ThemeProvider value={DefaultTheme}>
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="Game" />
         <Stack.Screen name="+not-found" />
       </Stack>
     </ThemeProvider>

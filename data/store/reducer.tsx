@@ -14,50 +14,17 @@
 
 import * as FormatData from "../interfaceFormat";
 import {
-    initialState, Action, CurrentCache, SET_USER,
-    SET_TODAY_NUTRI,
-    SET_GOAL_NUTRI,
-    SET_CURRENT_ITEM,
-    REMOVE_CURRENT_ITEM,
+    initialState, CurrentCache, Action,
+} from "./initial";
 
-} from "./index";
+import * as TYPE from "./action";
 
 export default function setReducer(state = initialState, action: Action): CurrentCache {
     switch (action.type) {
-        case SET_USER: {
+        case TYPE.SET_USER: {
             return {
                 ...state,
                 user: action.payload as FormatData.UserFormat
-            };
-        }
-        case SET_TODAY_NUTRI: {
-            return {
-                ...state,
-                todayNutri: action.payload as FormatData.NutriFormat
-            };
-        }
-        case SET_GOAL_NUTRI: {
-            return {
-                ...state,
-                goalNutri: action.payload as FormatData.NutriFormat
-            };
-        }
-        case SET_CURRENT_ITEM: {
-            if (state.currentItem.includes(action.payload as FormatData.ItemFormat)) {
-                return state;
-            }
-            return {
-                ...state,
-                currentItem: [...state.currentItem, action.payload as FormatData.ItemFormat]
-            };
-        }
-        case REMOVE_CURRENT_ITEM: {
-            if (!state.currentItem.includes(action.payload as FormatData.ItemFormat)) {
-                return state;
-            }
-            return {
-                ...state,
-                currentItem: state.currentItem.filter((item) => item !== action.payload)
             };
         }
 
