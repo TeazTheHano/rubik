@@ -6,17 +6,9 @@ export interface StorageItem {
 }
 
 export interface UserFormat {
-    synced?: boolean;
     name: string;
-    age?: number;
-    loginMethod?: string;
-    email: string;
-    dataCollect?: boolean;
-    data?: {
-        interest: string[];
-        favorite: string[];
-        job?: string;
-    }
+    star: number
+    id: string
 }
 
 export interface MatchHistoryFormat {
@@ -34,8 +26,8 @@ export interface MatchHistoryFormat {
 }
 
 export interface RoomFormat {
-    match: MatchHistoryFormat,
-    no: number,
+    match: MatchHistoryFormat | null,
+    id: number,
     pass: string | number,
     public: boolean,
 }

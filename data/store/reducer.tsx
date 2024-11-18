@@ -27,7 +27,12 @@ export default function setReducer(state = initialState, action: Action): Curren
                 user: action.payload as FormatData.UserFormat
             };
         }
-
+        case TYPE.SET_CURRENT_GAME_LVL: {
+            return {
+                ...state,
+                currentGameLvl: action.payload as number
+            }
+        }
         default:
             return state;
     }

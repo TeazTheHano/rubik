@@ -19,7 +19,7 @@ export default function Setting() {
             start: generateRandomTime(),
             end: generateRandomTime(),
           },
-          lvl: 'Beginner',
+          lvl: ['Beginner', 'Intermediate', 'Expert'][Math.floor(Math.random() * 3)] as 'Beginner' | 'Intermediate' | 'Expert',
           rounds: Array.from({ length: 5 }, () => ({
             start: generateRandomTime(),
             end: generateRandomTime(),

@@ -1053,6 +1053,37 @@ export const greenClock = (w: any = '100%', h: any = '100%', color?: any) => {
     )
 }
 
+export const tripleline = (w: any = '100%', h: any = '100%', color?: any) => {
+    const xml = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M3 7H21" stroke="#FCFAFF" stroke-width="1.5" stroke-linecap="round"/>
+<path d="M3 12H21" stroke="#FCFAFF" stroke-width="1.5" stroke-linecap="round"/>
+<path d="M3 17H21" stroke="#FCFAFF" stroke-width="1.5" stroke-linecap="round"/>
+</svg>
+`
+    return (
+        <SvgXml xml={xml} width={w} height={h} />
+    )
+}
+
+export const bgEren = (w: any = '100%', h: any = '100%', color?: any) => {
+    const xml = `<svg xmlns="http://www.w3.org/2000/svg" width="375" height="547" viewBox="0 0 375 547" fill="none">
+  <g filter="url(#filter0_f_104_6314)">
+    <path d="M113.208 90.1403C70.0472 95.6259 19.7524 298.138 0 398.709V457C21.816 359.858 76.4151 187.563 120.283 168.363C175.118 144.363 203.42 470.074 262.677 422.075C310.083 383.675 357.311 229.261 375 143.548V90.1403C359.965 90.1403 293.632 330.138 262.677 330.138C231.722 330.138 167.158 83.2832 113.208 90.1403Z" fill="#53389E"/>
+  </g>
+  <defs>
+    <filter id="filter0_f_104_6314" x="-90" y="0" width="555" height="547" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+      <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+      <feGaussianBlur stdDeviation="45" result="effect1_foregroundBlur_104_6314"/>
+    </filter>
+  </defs>
+</svg>`
+    return (
+        <SvgXml xml={xml} width={w} height={h} />
+    )
+}
+
+
 
 // export const NAME = (w: any = '100%', h: any = '100%', color?:any) => {
 //     const xml = ``

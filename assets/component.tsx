@@ -491,3 +491,7 @@ export function avatarComponet(w: number = vw(12), h: number = vw(12), bgColor?:
         </View>
     )
 }
+
+export function convertNumberToTime(length: number) {
+    return `${Math.floor(length / 3600000)}:${`0${Math.floor((length % 3600000) / 60000)}`.slice(-2)}:${`0${Math.floor((length % 60000) / 1000)}`.slice(-2)}.${`00${length % 1000}`.slice(-3)}`
+}

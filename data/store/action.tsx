@@ -17,3 +17,12 @@ export const currentSetUser = (user: UserFormat) => {
         payload: user
     }
 }
+
+export const SET_CURRENT_GAME_LVL = 'SET_CURRENT_GAME_LVL'
+
+export const currentSaveGameLvl = (lvl: 0 | 1 | 2) => {
+    return {
+        type: SET_CURRENT_GAME_LVL,
+        payload: lvl
+    }
+}

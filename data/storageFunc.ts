@@ -2,7 +2,6 @@ import Storage from 'react-native-storage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Alert } from 'react-native';
 import * as FORMATDATA from './interfaceFormat';
-import { factoryData } from './factoryData';
 
 const storage = new Storage({
   // maximum capacity, default 1000 key-ids
@@ -99,7 +98,7 @@ export const saveStorageItem = async <K extends keyof FORMATDATA.StorageItem>(ke
       data: item,
       id,
     });
-    console.log(`Save successfully: ${key} - ${id}`);
+    console.log(`Save successfully: ${key} - ${id ? id : ''}`);
 
     return true;
   } catch (error) {

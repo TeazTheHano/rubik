@@ -7,7 +7,7 @@ import styles from './stylesheet';
 import { vw, vh } from './stylesheet';
 
 // component import
-import { marginBottomForScrollView } from './component';
+import { convertNumberToTime, marginBottomForScrollView } from './component';
 
 // svg import
 import * as SVG from './svgXml';
@@ -395,75 +395,79 @@ interface SearchBoxState {
 
 }
 
-// export class BoardingInput extends Component<{
-//     title: string,
-//     supFncTitle?: string,
-//     supFncTitleColor?: string,
-//     supFnc?: () => void,
-//     subTitle?: string,
-//     placeholder?: string,
-//     value: string | number,
-//     isNumber?: boolean,
-//     onChgText: (value: string | number) => void,
-//     CustomStyleClass?: any,
-//     CustomStyleText?: any,
-//     CustomStyleInput?: any,
-//     contentType?: string
-//     hideContent?: boolean,
-//     hideContentFnc?: (value: boolean) => void,
-//     autoCap?: 'none' | 'characters' | 'words' | 'sentences',
-//     maxLength?: number,
-//     activeColor?: string,
-//     passiveColor?: string,
-//     tileColor?: string,
-// }> {
+export class BoardingInput extends Component<{
+    title: string,
+    supFncTitle?: string,
+    supFncTitleColor?: string,
+    supFnc?: () => void,
+    subTitle?: string,
+    placeholder?: string,
+    value: string | number,
+    isNumber?: boolean,
+    onChgText: (value: string | number) => void,
+    CustomStyleClass?: any,
+    CustomStyleText?: any,
+    CustomStyleInput?: any,
+    contentType?: string
+    hideContent?: boolean,
+    hideContentFnc?: (value: boolean) => void,
+    autoCap?: 'none' | 'characters' | 'words' | 'sentences',
+    maxLength?: number,
+    activeColor?: string,
+    passiveColor?: string,
+    tileColor?: string,
+    TextClassTitle?: React.ComponentType<any>
+    TextClassFnc?: React.ComponentType<any>
+}> {
 
-//     render() {
-//         const { title, placeholder, value, onChgText, CustomStyleClass, CustomStyleInput, CustomStyleText, contentType, subTitle, supFnc, supFncTitle, hideContent, hideContentFnc, autoCap, maxLength, supFncTitleColor, activeColor, passiveColor, tileColor } = this.props;
-//         const isNumber = this.props.isNumber ? this.props.isNumber : false;
+    render() {
+        const { TextClassTitle, TextClassFnc, title, placeholder, value, onChgText, CustomStyleClass, CustomStyleInput, CustomStyleText, contentType, subTitle, supFnc, supFncTitle, hideContent, hideContentFnc, autoCap, maxLength, supFncTitleColor, activeColor, passiveColor, tileColor } = this.props;
+        const isNumber = this.props.isNumber ? this.props.isNumber : false;
+        let TClassTitle = TextClassTitle ? TextClassTitle : Text
+        let TClassFnc = TextClassFnc ? TextClassFnc : Text;
 
-//         function changFnc(value: string | number) {
-//             if (isNumber) {
-//                 onChgText(parseInt(value as string));
-//             } else {
-//                 onChgText(value);
-//             }
-//         }
+        function changFnc(value: string | number) {
+            if (isNumber) {
+                onChgText(parseInt(value as string));
+            } else {
+                onChgText(value);
+            }
+        }
 
-//         return (
-//             <View style={[styles.flexColCenter, styles.gap4vw, styles.positionRelative, CustomStyleClass]}>
-//                 {title ?
-//                     <Nunito24Bold style={[{ color: tileColor }, CustomStyleText]}>{title}</Nunito24Bold>
-//                     : null}
-//                 <TextInput
-//                     placeholder={placeholder ? placeholder : 'Type here'}
-//                     value={value ? value.toString() : ''}
-//                     onChangeText={changFnc}
-//                     placeholderTextColor={passiveColor as string}
-//                     secureTextEntry={hideContent ? hideContent : false}
-//                     keyboardType={isNumber ? 'numeric' : 'default'}
-//                     autoCapitalize={autoCap ? autoCap : 'sentences'}
-//                     textContentType={contentType as TextInputProps['textContentType']}
-//                     maxLength={maxLength ? maxLength : undefined}
-//                     style={[styles.w100, styles.border1, styles.textCenter, { borderColor: value ? activeColor : passiveColor, padding: vw(2.5), fontFamily: value ? 'Nunito-Bold' : 'Nunito-Regular', fontSize: vw(4.5), borderRadius: vw(2), color: value ? activeColor : passiveColor }, CustomStyleInput]} />
-//                 {hideContentFnc ?
-//                     <TouchableOpacity
-//                         onPress={() => { hideContentFnc && hideContentFnc(!hideContent) }}
-//                         style={[styles.padding2vw, styles.positionAbsolute, { bottom: -vw(12) }]}>
-//                         <Nunito14Reg style={{ color: activeColor }}>{hideContent ? `Show ${contentType}` : `Hide ${contentType}`}</Nunito14Reg>
-//                     </TouchableOpacity>
-//                     : null}
-//                 {subTitle ?
-//                     <View style={[styles.flexRowCenter]}>
-//                         <Nunito16Reg style={[{ color: passiveColor }]}>{subTitle}</Nunito16Reg>
-//                         <TouchableOpacity onPress={supFnc}><Nunito16Reg style={[styles.textUnderline, { color: supFncTitleColor ? supFncTitleColor : clrStyle.black }]}>{supFncTitle}</Nunito16Reg></TouchableOpacity>
-//                     </View>
-//                     : null
-//                 }
-//             </View>
-//         );
-//     }
-// }
+        return (
+            <View style={[styles.flexColCenter, styles.gap4vw, styles.positionRelative, CustomStyleClass]}>
+                {title ?
+                    <TClassTitle style={[{ color: tileColor }, CustomStyleText]}>{title}</TClassTitle>
+                    : null}
+                <TextInput
+                    placeholder={placeholder ? placeholder : 'Type here'}
+                    value={value ? value.toString() : ''}
+                    onChangeText={changFnc}
+                    placeholderTextColor={passiveColor as string}
+                    secureTextEntry={hideContent ? hideContent : false}
+                    keyboardType={isNumber ? 'numeric' : 'default'}
+                    autoCapitalize={autoCap ? autoCap : 'sentences'}
+                    textContentType={contentType as TextInputProps['textContentType']}
+                    maxLength={maxLength ? maxLength : undefined}
+                    style={[styles.w100, styles.border1, styles.textCenter, { borderColor: value ? activeColor : passiveColor, padding: vw(2.5), fontSize: vw(4.5), borderRadius: vw(2), color: value ? activeColor : passiveColor }, CustomStyleInput]} />
+                {hideContentFnc ?
+                    <TouchableOpacity
+                        onPress={() => { hideContentFnc && hideContentFnc(!hideContent) }}
+                        style={[styles.padding2vw, styles.positionAbsolute, { bottom: -vw(12) }]}>
+                        <TClassFnc style={{ color: activeColor }}>{hideContent ? `Show ${contentType}` : `Hide ${contentType}`}</TClassFnc>
+                    </TouchableOpacity>
+                    : null}
+                {subTitle ?
+                    <View style={[styles.flexRowCenter]}>
+                        <TClassFnc style={[{ color: passiveColor }]}>{subTitle}</TClassFnc>
+                        <TouchableOpacity onPress={supFnc}><TClassFnc style={[styles.textUnderline, { color: supFncTitleColor ? supFncTitleColor : clrStyle.black }]}>{supFncTitle}</TClassFnc></TouchableOpacity>
+                    </View>
+                    : null
+                }
+            </View>
+        );
+    }
+}
 
 export class ProcessBarSelfMade extends Component<{
     barLength: number,
@@ -593,14 +597,46 @@ export class LevelChoosing extends Component<{ icon: any, title: string, med: st
                                 <CTEXT.NGT_Inter_BodyLg_SemiBold>{this.props.title}</CTEXT.NGT_Inter_BodyLg_SemiBold>
                                 <View style={[styles.border1, styles.borderRadius100, styles.paddingH2vw, { borderColor: NGHIACOLOR.NghiaBrand300 }]}><CTEXT.NGT_Inter_BodyMd_Med>{this.props.time}s</CTEXT.NGT_Inter_BodyMd_Med></View>
                             </ViewRowStartCenter>
-                            <CTEXT.NGT_Inter_BodyMd_Reg>Method <CTEXT.NGT_Inter_BodyMd_SemiBold color={NGHIACOLOR.NghiaBrand300}>{this.props.med}</CTEXT.NGT_Inter_BodyMd_SemiBold></CTEXT.NGT_Inter_BodyMd_Reg>
+                            <CTEXT.NGT_Inter_BodyMd_Reg>Phương pháp <CTEXT.NGT_Inter_BodyMd_SemiBold color={NGHIACOLOR.NghiaBrand300}>{this.props.med}</CTEXT.NGT_Inter_BodyMd_SemiBold></CTEXT.NGT_Inter_BodyMd_Reg>
                         </ViewCol>
                     </ViewRow>
-                    <TouchableOpacity onPress={this.props.navAdd}>
-                        <ViewGra800600 style={[styles.paddingH6vw, styles.paddingV2vw, styles.borderRadius100,]}>
-                            <CTEXT.NGT_Inter_BodyMd_Med>Play</CTEXT.NGT_Inter_BodyMd_Med>
-                        </ViewGra800600>
-                    </TouchableOpacity>
+                    {
+                        this.props.navAdd ?
+                            <TouchableOpacity onPress={this.props.navAdd}>
+                                <ViewGra800600 style={[styles.paddingH6vw, styles.paddingV2vw, styles.borderRadius100,]}>
+                                    <CTEXT.NGT_Inter_BodyMd_Med>Bắt đầu</CTEXT.NGT_Inter_BodyMd_Med>
+                                </ViewGra800600>
+                            </TouchableOpacity>
+                            : null
+                    }
+                </ViewRowBetweenCenter>
+            </ViewRowCenter>
+        )
+    }
+}
+
+export class LevelBeing extends Component<{ icon: any, title: string, med: string, time: number }> {
+    render(): React.ReactNode {
+        return (
+            <ViewRowCenter style={[styles.positionRelative, { height: vw(18) }]}>
+                <View style={[styles.positionAbsolute, componentStyle.outlineGlow, { zIndex: 2, left: 0 }]}>
+                    {this.props.icon(vw(18), vw(18))}
+                </View>
+                <ViewRowBetweenCenter style={[styles.flex1, styles.paddingH4vw, { borderTopRightRadius: vw(100), borderBottomRightRadius: vw(100), marginLeft: vw(7), backgroundColor: NGHIACOLOR.NghiaTransparentWhite30 }]}>
+                    <ViewRow>
+                        <View style={{ width: vw(10), height: vw(1) }} />
+                        <ViewCol style={[styles.gap1vw, styles.paddingV2vw]}>
+                            <ViewRowStartCenter style={[styles.gap2vw]}>
+                                <CTEXT.NGT_Inter_BodyLg_SemiBold>{this.props.title}</CTEXT.NGT_Inter_BodyLg_SemiBold>
+                            </ViewRowStartCenter>
+                            <CTEXT.NGT_Inter_BodyMd_Reg>Phương pháp <CTEXT.NGT_Inter_BodyMd_SemiBold color={NGHIACOLOR.NghiaBrand300}>{this.props.med}</CTEXT.NGT_Inter_BodyMd_SemiBold></CTEXT.NGT_Inter_BodyMd_Reg>
+                        </ViewCol>
+                    </ViewRow>
+
+                    <View style={[styles.padding2vw, styles.borderRadius100, { backgroundColor: NGHIACOLOR.NghiaTransparentDark30 }]}>
+                        <CTEXT.NGT_Inter_BodyMd_SemiBold color={NGHIACOLOR.NghiaBrand300}>Tổng {convertNumberToTime(this.props.time)}</CTEXT.NGT_Inter_BodyMd_SemiBold>
+                    </View>
+
                 </ViewRowBetweenCenter>
             </ViewRowCenter>
         )
@@ -618,7 +654,7 @@ export class MatchHistory extends Component<{ data: FormatData.MatchHistoryForma
                     <CTEXT.NGT_Inter_BodyMd_Reg color={NGHIACOLOR.NghiaGray200}> {new Date(date).toLocaleDateString('vi-VN', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'narrow' })}</CTEXT.NGT_Inter_BodyMd_Reg>
                 </ViewRowStartCenter>
                 <CTEXT.RobotoMonoReg12 color={NGHIACOLOR.NghiaBrand300}>
-                    {`${Math.floor(length / 3600000)}:${`0${Math.floor((length % 3600000) / 60000)}`.slice(-2)}:${`0${Math.floor((length % 60000) / 1000)}`.slice(-2)}.${`00${length % 1000}`.slice(-3)}`}
+                    {convertNumberToTime(length)}
                 </CTEXT.RobotoMonoReg12>
             </ViewRowBetweenCenter>
         )
@@ -670,4 +706,12 @@ export class ViewGra600500 extends Component<{ children?: React.ReactNode, style
     }
 }
 
+// export class Top3Nav extends Component<{ nav: any, title: string }> {
+//     render(): React.ReactNode {
+//         return (
+//             <ViewColBetweenCenter>
 
+//             </ViewColBetweenCenter>
+//         )
+//     }
+// }

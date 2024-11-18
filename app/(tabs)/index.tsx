@@ -8,19 +8,27 @@ import * as  CLASS from '@/assets/Class'
 import * as CTEXT from '@/assets/CustomText'
 import { DefaultTheme, useNavigation } from '@react-navigation/native'
 import { MatchHistoryFormat } from '@/data/interfaceFormat'
-import { getStorageList } from '@/data/storageFunc'
-import { RootContext } from '@/data/store'
+import { getStorageItem, getStorageList, getUser } from '@/data/storageFunc'
+import { currentSaveGameLvl, currentSetUser, RootContext } from '@/data/store'
 
 export default function index() {
   const navigation = useNavigation()
   const [CurrentCache, dispatch] = React.useContext(RootContext)
-  const [starNum, setStarNum] = React.useState(0)
   const [bestMatchSelect, setBestMatchSelect] = React.useState(0)
   const [isBestMatchListClipped, setIsBestMatchListClipped] = React.useState<boolean>(true)
   const [matchHisList, setMatchHisList] = React.useState<MatchHistoryFormat[]>()
 
   useEffect(() => {
     const unsub = navigation.addListener('focus', () => {
+      getUser().then((res) => {
+        if (res) {
+          console.log(res);
+          
+          dispatch(currentSetUser(res))
+        } else {
+          navigation.navigate('Info' as never)
+        }
+      })
       getStorageList('match').then((res) => {
         if (res) {
           setMatchHisList(res)
@@ -33,9 +41,9 @@ export default function index() {
   }, [navigation]); // Add dependencies in the array if needed
 
   const lvlData = [
-    [ICON.lv1, 'Nhập môn', 'AO5', 30, () => navigation.navigate('Game', { lvl: 'Beginner' })],
-    [ICON.lv2, 'Trung cấp', 'AO5', 15, () => navigation.navigate('Game', { lvl: 'Intermediate' })],
-    [ICON.lv3, 'Nâng cao', 'AO12', 15, () => navigation.navigate('Game', { lvl: 'Expert' })],
+    [ICON.lv1, 'Nhập môn', 'AO5', 30, () => { dispatch(currentSaveGameLvl(0)); navigation.navigate('Game' as never) }],
+    [ICON.lv2, 'Trung cấp', 'AO5', 15, () => { dispatch(currentSaveGameLvl(1)); navigation.navigate('Game' as never) }],
+    [ICON.lv3, 'Nâng cao', 'AO12', 15, () => { dispatch(currentSaveGameLvl(2)); navigation.navigate('Game' as never) }],
   ]
 
   return (
@@ -44,19 +52,19 @@ export default function index() {
         <CLASS.ViewRowBetweenCenter style={[styles.paddingV2vw, styles.alignItemsStart]}>
           <View>
             <CTEXT.NGT_Inter_DispMd_SemiBold>Timer<CTEXT.NGT_Inter_DispMd_SemiBold color={NGHIACOLOR.NghiaBrand300}>Match</CTEXT.NGT_Inter_DispMd_SemiBold></CTEXT.NGT_Inter_DispMd_SemiBold>
-            <CLASS.ViewRow style={[styles.gap2vw]}>
-              {avatarComponet(vw(5), vw(5))}
+            <CLASS.ViewRowStartCenter style={[styles.gap2vw]}>
+              {avatarComponet(vw(6), vw(6))}
               <CTEXT.NGT_Inter_BodyMd_Med>Chào mừng {CurrentCache.user.name}</CTEXT.NGT_Inter_BodyMd_Med>
-            </CLASS.ViewRow>
+            </CLASS.ViewRowStartCenter>
           </View>
           <CLASS.ViewRowStartCenter style={[styles.borderRadius2vw, styles.gap1vw, styles.paddingV1vw, styles.paddingRight4vw, styles.paddingLeft2vw, styles.border1, { backgroundColor: NGHIACOLOR.NghiaTransparentDark30, borderColor: NGHIACOLOR.NghiaBrand800 }]}>
             <Image style={[{ width: vw(7), height: vw(7) }]} source={require('@/assets/photos/GoldStar.png')} />
-            <CTEXT.NGT_Inter_BodyLg_Med>{starNum}</CTEXT.NGT_Inter_BodyLg_Med>
+            <CTEXT.NGT_Inter_BodyLg_Med>{CurrentCache.user.star}</CTEXT.NGT_Inter_BodyLg_Med>
           </CLASS.ViewRowStartCenter>
         </CLASS.ViewRowBetweenCenter>
 
         <CLASS.ViewCol style={[styles.gap4vw, styles.marginVertical4vw, styles.paddingH4vw, styles.paddingV4vw, componentStyle.borderBrand800]}>
-          <CTEXT.NGT_Inter_HeaderMd_SemiBold>Choose difficulty to start</CTEXT.NGT_Inter_HeaderMd_SemiBold>
+          <CTEXT.NGT_Inter_HeaderMd_SemiBold>Lựa chọn mức độ chơi</CTEXT.NGT_Inter_HeaderMd_SemiBold>
           {
             lvlData.map((item, index) => {
               return <CLASS.LevelChoosing key={index} icon={item[0]} title={item[1] as string} med={item[2] as string} time={item[3] as number} navAdd={item[4]} />
@@ -69,7 +77,7 @@ export default function index() {
           <CLASS.ViewRow style={[styles.flex1, styles.borderRadius2vw, styles.overflowHidden]}>
 
             <CLASS.ViewGra800700 style={[styles.w50, styles.flexRowCenter, styles.paddingV3vw]}>
-              <CTEXT.NGT_Inter_HeaderLg_Med>Best match</CTEXT.NGT_Inter_HeaderLg_Med>
+              <CTEXT.NGT_Inter_HeaderLg_Med>Thành tích</CTEXT.NGT_Inter_HeaderLg_Med>
             </CLASS.ViewGra800700>
 
             <CLASS.ViewGra800700 style={[styles.w50, styles.flexRowCenter, styles.paddingV3vw, styles.gap4vw]}>
@@ -112,9 +120,10 @@ export default function index() {
           <TouchableOpacity
             onPress={() => setIsBestMatchListClipped(!isBestMatchListClipped)}
             style={[styles.paddingV1vw, styles.alignSelfEnd,]}>
-            <CTEXT.NGT_Inter_BodyMd_Reg style={[styles.textUnderline]}>{isBestMatchListClipped ? 'Hiện thêm' : 'Ẩn bớtÏ'}</CTEXT.NGT_Inter_BodyMd_Reg>
+            <CTEXT.NGT_Inter_BodyMd_Reg style={[styles.textUnderline]}>{isBestMatchListClipped ? 'Hiện thêm' : 'Ẩn bớt'}</CTEXT.NGT_Inter_BodyMd_Reg>
           </TouchableOpacity>
         </CLASS.ViewCol>
+
 
         {marginBottomForScrollView()}
       </ScrollView>
