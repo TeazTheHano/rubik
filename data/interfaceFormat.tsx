@@ -9,6 +9,7 @@ export interface UserFormat {
     name: string;
     star: number
     id: string
+    best?: [number, number, number]
 }
 
 export interface MatchHistoryFormat {
@@ -30,6 +31,7 @@ export interface RoomFormat {
     id: number,
     pass: string | number,
     public: boolean,
+    lvl: string
 }
 
 export interface GuideFormat {

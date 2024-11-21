@@ -26,7 +26,8 @@ export const initialState: CurrentCache = {
     user: {
         name: '',
         id: '',
-        star: 10
+        star: 10,
+        best: [1, 2, 3]
     },
     currentGameLvl: 0
 };

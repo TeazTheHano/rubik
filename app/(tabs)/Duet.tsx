@@ -8,8 +8,8 @@ import * as  CLASS from '@/assets/Class'
 import * as CTEXT from '@/assets/CustomText'
 import { DefaultTheme, useNavigation } from '@react-navigation/native'
 import { MatchHistoryFormat, RoomFormat } from '@/data/interfaceFormat'
-import { getStorageItem, getStorageList } from '@/data/storageFunc'
-import { RootContext } from '@/data/store'
+import { getStorageItem, getStorageList, saveStorageItem } from '@/data/storageFunc'
+import { currentSaveGameLvl, RootContext } from '@/data/store'
 import { SvgXml } from 'react-native-svg'
 import { lvlData } from '@/data/factoryData'
 
@@ -18,25 +18,41 @@ export default function Duet() {
   const [CurrentCache, dispatch] = React.useContext(RootContext)
 
   const [roomID, setRoomID] = React.useState<string>('')
-  const [roomInfo, setRoomInfo] = React.useState<RoomFormat>()
   const [isCreateNew, setIsCreateNew] = React.useState<boolean>(false)
   const [isPrivate, setIsPrivate] = React.useState<boolean>(false)
+  const [LevelChoosing, setLevelChoosing] = React.useState<number | null>(null)
+  const [RoomPassword, setRoomPassword] = React.useState<string>('')
 
   function roomJoinHandler() {
     if (roomID !== '') {
-      navigation.navigate('DuetRoom', { roomID: roomID })
+      navigation.navigate('Game' as never)
     } else {
-      Alert.alert('Vui lớng nhập ID phòng')
+      return Alert.alert('Vui lòng nhập ID phòng')
     }
   }
 
   function createRoom() {
-    let data: RoomFormat = {
-      match: null,
-      id: 0,
-      pass: 0,
-      public: false,
+    if (LevelChoosing === null) {
+      return Alert.alert('Vui lòng chọn mức độ chơi')
     }
+    let newRoom: RoomFormat = {
+      match: null,
+      id: Number(roomID),
+      pass: RoomPassword,
+      public: !isPrivate,
+      lvl: lvlData[LevelChoosing as number][1] as string,
+    }
+    saveStorageItem('room', newRoom, roomID).then((res) => {
+      if (res) {
+        dispatch(currentSaveGameLvl(LevelChoosing as 0 | 1 | 2))
+        navigation.navigate('Game' as never)
+        setIsCreateNew(false)
+        setRoomID('')
+        setRoomPassword('')
+        setLevelChoosing(null)
+        setIsPrivate(false)
+      }
+    })
   }
 
   // Create new room with random ID
@@ -62,12 +78,19 @@ export default function Duet() {
       case true:
         return (
           <>
+            <TouchableOpacity
+              onPress={() => setIsCreateNew(false)}
+              style={[styles.alignSelfEnd, styles.paddingH2vw,]}>
+              <CLASS.ViewRowStartCenter>
+                <CTEXT.NGT_Inter_HeaderMd_Med>Huỷ </CTEXT.NGT_Inter_HeaderMd_Med>
+                {ICON.xIcon(vw(7), vw(7), NGHIACOLOR.NghiaError500)}
+              </CLASS.ViewRowStartCenter>
+            </TouchableOpacity>
             <CLASS.ViewCol style={[componentStyle.borderBrand800, styles.gap4vw, styles.marginVertical4vw, styles.w100, styles.padding4vw]}>
-
               <CTEXT.NGT_Inter_HeaderMd_SemiBold>Lựa chọn mức độ chơi</CTEXT.NGT_Inter_HeaderMd_SemiBold>
               {
                 lvlData.map((item, index) => {
-                  return <CLASS.LevelChoosing key={index} icon={item[0]} title={item[1] as string} med={item[2] as string} time={item[3] as number} navAdd={item[4]} />
+                  return <TouchableOpacity key={index} onPress={() => setLevelChoosing(index)}><CLASS.LevelChoosing icon={item[0]} title={item[1] as string} med={item[2] as string} time={item[3] as number} isChose={index === LevelChoosing} /></TouchableOpacity>
                 })
               }
 
@@ -82,10 +105,27 @@ export default function Duet() {
                     onValueChange={(value) => { setIsPrivate(value) }}
                     thumbColor={NGHIACOLOR.NghiaBrand600}
                     trackColor={{ false: NGHIACOLOR.NghiaGray500, true: NGHIACOLOR.NghiaBrand300 }}
-
                   />
                 </CLASS.ViewRowCenter>
               </CLASS.ViewRowBetweenCenter>
+
+              <TextInput
+                value={RoomPassword}
+                onChangeText={setRoomPassword}
+                placeholder='Đặt mật khẩu ở đây'
+                placeholderTextColor={NGHIACOLOR.NghiaGray400}
+                style={[styles.borderRadius2vw, styles.paddingH4vw, styles.paddingV2vw, styles.border1, styles.w100, styles.border1, { borderColor: NGHIACOLOR.NghiaGray400, fontFamily: 'Inter-Medium', fontSize: vw(3.5), backgroundColor: NGHIACOLOR.NghiaTransparentDark30, color: 'white' }]}
+              />
+
+              <CLASS.ViewGra800600 style={[styles.w100, styles.borderRadius2vw]}>
+                <CLASS.RoundBtn
+                  title='Tạo phòng'
+                  onPress={createRoom}
+                  textClass={CTEXT.NGT_Inter_HeaderMd_SemiBold}
+                  textColor={clrStyle.white}
+                  customStyle={[styles.paddingV2vw, styles.justifyContentCenter]}
+                />
+              </CLASS.ViewGra800600>
             </CLASS.ViewCol>
           </>
         )
@@ -93,7 +133,7 @@ export default function Duet() {
       default:
         return (
           <>
-            <Image style={[{ width: vw(84), height: vw(54), borderTopRightRadius: vw(8), borderTopLeftRadius: vw(8) }]} source={require('@/assets/photos/duet.jpeg')} />
+            <Image style={[styles.marginTop4vw, { width: vw(84), height: vw(54), borderTopRightRadius: vw(8), borderTopLeftRadius: vw(8) }] as ImageStyle} source={require('@/assets/photos/duet.jpeg')} />
             <CLASS.ViewGra800600 style={[styles.w100, styles.borderRadius2vw]}>
               <CLASS.RoundBtn
                 title='Tạo phòng'
@@ -145,7 +185,7 @@ export default function Duet() {
         </CLASS.ViewRowStartCenter>
       </CLASS.ViewRowBetweenCenter>
 
-      <ScrollView style={[styles.padding4vw, styles.flex1]} contentContainerStyle={[styles.flexColCenter]}>
+      <ScrollView style={[styles.paddingH4vw, styles.flex1]} contentContainerStyle={[styles.flexColCenter]}>
         {renderItem()}
       </ScrollView>
     </CLASS.SSBarWithSaveArea >

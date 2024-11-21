@@ -582,14 +582,14 @@ export class ProcessBarSelfMade extends Component<{
 
 // CUSTOM__________________________________________
 
-export class LevelChoosing extends Component<{ icon: any, title: string, med: string, time: number, navAdd: any }> {
+export class LevelChoosing extends Component<{ icon: any, title: string, med: string, time: number, navAdd?: any, isChose?: boolean }> {
     render(): React.ReactNode {
         return (
             <ViewRowCenter style={[styles.positionRelative, { height: vw(18) }]}>
                 <View style={[styles.positionAbsolute, componentStyle.outlineGlow, { zIndex: 2, left: 0 }]}>
                     {this.props.icon(vw(18), vw(18))}
                 </View>
-                <ViewRowBetweenCenter style={[styles.flex1, styles.paddingH4vw, { borderTopRightRadius: vw(100), borderBottomRightRadius: vw(100), marginLeft: vw(7), backgroundColor: NGHIACOLOR.NghiaTransparentWhite30 }]}>
+                <ViewRowBetweenCenter style={[styles.flex1, styles.paddingH4vw, { borderTopRightRadius: vw(100), borderBottomRightRadius: vw(100), marginLeft: vw(7), backgroundColor: this.props.isChose ? NGHIACOLOR.NghiaBrand600 : NGHIACOLOR.NghiaTransparentWhite30 }]}>
                     <ViewRow>
                         <View style={{ width: vw(10), height: vw(1) }} />
                         <ViewCol style={[styles.gap1vw, styles.paddingV2vw]}>

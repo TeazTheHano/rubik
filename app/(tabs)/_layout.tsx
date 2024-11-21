@@ -101,6 +101,7 @@ export default function TabLayout() {
       tabBar={({ state, navigation }) => <TabBar state={state} navigation={navigation} />}
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+        tabBarHideOnKeyboard: true,
         headerShown: false,
       }}>
       {screens.map((screen) => (
@@ -116,4 +117,3 @@ export default function TabLayout() {
     </Tabs>
   );
 }
-

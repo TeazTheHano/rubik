@@ -1334,6 +1334,11 @@ const styles = StyleSheet.create({
         borderColor: 'yellow',
     },
 
+    border1white: {
+        borderWidth: 1,
+        borderColor: 'white',
+    },
+
     border1: {
         borderWidth: 1,
     },
