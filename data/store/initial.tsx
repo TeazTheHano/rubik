@@ -15,6 +15,7 @@ import { UserFormat } from "../interfaceFormat";
 export interface CurrentCache {
     user: UserFormat;
     currentGameLvl: number
+    multiMode: 0 | 1
 }
 
 export interface Action {
@@ -29,5 +30,6 @@ export const initialState: CurrentCache = {
         star: 10,
         best: [1, 2, 3]
     },
-    currentGameLvl: 0
+    currentGameLvl: 0,
+    multiMode: 0
 };

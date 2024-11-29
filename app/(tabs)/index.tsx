@@ -9,7 +9,7 @@ import * as CTEXT from '@/assets/CustomText'
 import { DefaultTheme, useNavigation } from '@react-navigation/native'
 import { MatchHistoryFormat } from '@/data/interfaceFormat'
 import { getStorageItem, getStorageList, getUser } from '@/data/storageFunc'
-import { currentSaveGameLvl, currentSetUser, RootContext } from '@/data/store'
+import { currentSaveGameLvl, currentSaveMultiMode, currentSetUser, RootContext } from '@/data/store'
 
 export default function index() {
   const navigation = useNavigation()
@@ -23,7 +23,7 @@ export default function index() {
       getUser().then((res) => {
         if (res) {
           console.log(res);
-          
+
           dispatch(currentSetUser(res))
         } else {
           navigation.navigate('Info' as never)
@@ -41,9 +41,9 @@ export default function index() {
   }, [navigation]); // Add dependencies in the array if needed
 
   const lvlData = [
-    [ICON.lv1, 'Nhập môn', 'AO5', 30, () => { dispatch(currentSaveGameLvl(0)); navigation.navigate('Game' as never) }],
-    [ICON.lv2, 'Trung cấp', 'AO5', 15, () => { dispatch(currentSaveGameLvl(1)); navigation.navigate('Game' as never) }],
-    [ICON.lv3, 'Nâng cao', 'AO12', 15, () => { dispatch(currentSaveGameLvl(2)); navigation.navigate('Game' as never) }],
+    [ICON.lv1, 'Nhập môn', 'AO5', 30, () => { dispatch(currentSaveMultiMode(0)); dispatch(currentSaveGameLvl(0)); navigation.navigate('Game' as never) }],
+    [ICON.lv2, 'Trung cấp', 'AO5', 15, () => { dispatch(currentSaveMultiMode(0)); dispatch(currentSaveGameLvl(1)); navigation.navigate('Game' as never) }],
+    [ICON.lv3, 'Nâng cao', 'AO12', 15, () => { dispatch(currentSaveMultiMode(0)); dispatch(currentSaveGameLvl(2)); navigation.navigate('Game' as never) }],
   ]
 
   return (

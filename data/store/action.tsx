@@ -19,10 +19,17 @@ export const currentSetUser = (user: UserFormat) => {
 }
 
 export const SET_CURRENT_GAME_LVL = 'SET_CURRENT_GAME_LVL'
-
 export const currentSaveGameLvl = (lvl: 0 | 1 | 2) => {
     return {
         type: SET_CURRENT_GAME_LVL,
         payload: lvl
+    }
+}
+
+export const SET_CURRENT_MULTI_MODE = 'SET_CURRENT_MULTI_MODE'
+export const currentSaveMultiMode = (mode: 0 | 1 ) => {
+    return {
+        type: SET_CURRENT_MULTI_MODE,
+        payload: mode
     }
 }

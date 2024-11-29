@@ -33,6 +33,12 @@ export default function setReducer(state = initialState, action: Action): Curren
                 currentGameLvl: action.payload as number
             }
         }
+        case TYPE.SET_CURRENT_MULTI_MODE: {
+            return {
+                ...state,
+                multiMode: action.payload as 0 | 1
+            }
+        }
         default:
             return state;
     }

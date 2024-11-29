@@ -691,6 +691,22 @@ export class ViewGra800700 extends Component<{ children?: React.ReactNode, style
     }
 }
 
+export class ViewGra700600 extends Component<{ children?: React.ReactNode, style?: (ViewStyle | ImageStyle)[] }> {
+
+    render(): React.ReactNode {
+        return (
+            <LinearGradient
+                colors={[NGHIACOLOR.NghiaBrand700, NGHIACOLOR.NghiaBrand600]}
+                start={[0, 0]}
+                end={[1, 1]}
+                style={this.props.style}
+            >
+                {this.props.children}
+            </LinearGradient>
+        )
+    }
+}
+
 export class ViewGra600500 extends Component<{ children?: React.ReactNode, style?: (ViewStyle | ImageStyle)[] }> {
     render(): React.ReactNode {
         return (

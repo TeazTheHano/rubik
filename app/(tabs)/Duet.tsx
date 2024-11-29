@@ -9,7 +9,7 @@ import * as CTEXT from '@/assets/CustomText'
 import { DefaultTheme, useNavigation } from '@react-navigation/native'
 import { MatchHistoryFormat, RoomFormat } from '@/data/interfaceFormat'
 import { getStorageItem, getStorageList, saveStorageItem } from '@/data/storageFunc'
-import { currentSaveGameLvl, RootContext } from '@/data/store'
+import { currentSaveGameLvl, currentSaveMultiMode, RootContext } from '@/data/store'
 import { SvgXml } from 'react-native-svg'
 import { lvlData } from '@/data/factoryData'
 
@@ -25,6 +25,7 @@ export default function Duet() {
 
   function roomJoinHandler() {
     if (roomID !== '') {
+      dispatch(currentSaveMultiMode(1))
       navigation.navigate('Game' as never)
     } else {
       return Alert.alert('Vui lòng nhập ID phòng')
@@ -45,6 +46,7 @@ export default function Duet() {
     saveStorageItem('room', newRoom, roomID).then((res) => {
       if (res) {
         dispatch(currentSaveGameLvl(LevelChoosing as 0 | 1 | 2))
+        dispatch(currentSaveMultiMode(1))
         navigation.navigate('Game' as never)
         setIsCreateNew(false)
         setRoomID('')
