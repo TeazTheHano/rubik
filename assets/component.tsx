@@ -66,7 +66,7 @@ export const onShare = async () => {
     }
 };
 
-export const ListGen = (customStyle: any, data: string | Array<string | string[]>, FontClass1st: ComponentType<any>, useColor: string = clrStyle.white as string, bullet1st: string = '1', FontClass2nd: ComponentType<any> = FontClass1st, bullet2nd: string = '-', textIndent2nd: any = 0) => {
+export const ListGen = (customStyle: any, data: string | Array<string | string[]>, FontClass1st: ComponentType<any>, textColor: string = clrStyle.white as string, bullet1st: string = '1', FontClass2nd: ComponentType<any> = FontClass1st, bullet2nd: string = '-', textIndent2nd: any = 0) => {
     function bulletMark(bullet: string, index: number) {
         let i = index == 0 ? 0 : index % 2 == 0 ? index / 2 : index
         if (bullet === 'a') {
@@ -134,14 +134,14 @@ export const ListGen = (customStyle: any, data: string | Array<string | string[]
         <View>
             {typeof data == 'string' ?
 
-                <FontClass1st style={{ ...customStyle, color: useColor }}>{data}</FontClass1st>
+                <FontClass1st style={{ ...customStyle, color: textColor }}>{data}</FontClass1st>
 
                 : data.map((item, index) => {
                     if (typeof item === 'string') {
                         return (
                             <View key={index} style={[styles.flexRow, styles.w100]}>
-                                <FontClass1st style={{ color: useColor }}>{bulletMark(bullet1st, index)} </FontClass1st>
-                                <FontClass1st style={{ color: useColor }}>{item}</FontClass1st>
+                                <FontClass1st style={{ color: textColor }}>{bulletMark(bullet1st, index)} </FontClass1st>
+                                <FontClass1st style={{ color: textColor }}>{item}</FontClass1st>
                             </View>
                         )
                     } else if (Array.isArray(item)) {
@@ -150,8 +150,8 @@ export const ListGen = (customStyle: any, data: string | Array<string | string[]
                                 {item.map((subItem, subIndex) => {
                                     return (
                                         <View key={subIndex} style={[styles.flexRow]}>
-                                            <FontClass2nd style={{ color: useColor }}>{bulletMark(bullet2nd, subIndex)} </FontClass2nd>
-                                            <FontClass2nd style={{ color: useColor, ...customStyle }}>{subItem}</FontClass2nd>
+                                            <FontClass2nd style={{ color: textColor }}>{bulletMark(bullet2nd, subIndex)} </FontClass2nd>
+                                            <FontClass2nd style={{ color: textColor, ...customStyle }}>{subItem}</FontClass2nd>
                                         </View>
                                     )
                                 })}

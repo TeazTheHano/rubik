@@ -32,24 +32,6 @@ export default function Game() {
   const [inspectTime, setInspectTime] = React.useState<number>(lvlData[CurrentCache.currentGameLvl][3] as number)
   const [displayTime, setDisplayTime] = React.useState<number>(0)
 
-  // const [touchCount, setTouchCount] = useState(0);
-  // const panResponderRef = useRef(
-  //   PanResponder.create({
-  //     onStartShouldSetPanResponder: () => true,
-  //     onPanResponderGrant: (evt, gestureState) => {
-  //       const currentTouchCount = evt.nativeEvent.touches.length;
-  //       setTouchCount(currentTouchCount);
-  //       if (currentTouchCount > 1) {
-  //         console.log('Immediate two-finger touch detected');
-  //         // Trigger your desired action here
-  //       }
-  //     },
-  //     onPanResponderRelease: () => {
-  //       setTouchCount(0);
-  //     },
-  //   })
-  // );
-
   const FOM = `F, D, U, R, L, B, F’, D’, U’, R’, L’, B’, F2, D2, U2, R2, L2, B2`
 
   useEffect(() => {
@@ -91,48 +73,6 @@ export default function Game() {
     setIsRunning(false);
   };
 
-  // const opacityAnimation = useRef(new Animated.Value(0)).current;
-  // const opacityAnimate = opacityAnimation.interpolate({
-  //   inputRange: [0, 1],
-  //   outputRange: ['100%', '0%'],
-  // })
-  // const opacityAnimator = () => {
-  //   Animated.timing(opacityAnimation, {
-  //     toValue: 1,
-  //     duration: 1000,
-  //     useNativeDriver: false,
-  //     easing: Easing.inOut(Easing.ease),
-  //   }).start();
-  // };
-
-  // const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  // const opacityAnimatorBlinker = () => {
-  //   intervalRef.current = setInterval(() => {
-  //     Animated.sequence([
-  //       Animated.timing(opacityAnimation, {
-  //         toValue: 1,
-  //         duration: 500,
-  //         useNativeDriver: false,
-  //         easing: Easing.ease,
-  //       }),
-  //       Animated.timing(opacityAnimation, {
-  //         toValue: 0,
-  //         duration: 500,
-  //         delay: 500,
-  //         useNativeDriver: false,
-  //         easing: Easing.ease,
-  //       }),
-  //     ]).start();
-  //   }, 1500);
-  // };
-
-  // const stopOpacityAnimatorBlinker = () => {
-  //   if (intervalRef.current) {
-  //     clearInterval(intervalRef.current);
-  //     intervalRef.current = null;
-  //   }
-  // };
-
   const opacityAnimate = useSharedValue(0);
   const timerExtraPaddingAnimate = useSharedValue(0);
   const handleOpacityAnimation = (toValue: number) => {
@@ -160,105 +100,88 @@ export default function Game() {
     }
   };
 
-  class TimerBox extends React.Component<{ round: number, header: string, bottom?: string, time?: number, formular?: string }> {
-    render(): React.ReactNode {
-      return (
-        <TouchableOpacity
-          disabled={step == 0}
-          onPressIn={stepFncControl}
-          onPressOut={() => {
-            console.log('press out');
-            step == 2 ? stepFncControl() : null
-          }}
-        >
-          <CLASS.ViewColCenter style={[styles.marginTop4vw, styles.positionRelative, styles.overflowHidden, { backgroundColor: NGHIACOLOR.NghiaTransparentDark30, borderColor: step == 3 ? 'red' : NGHIACOLOR.NghiaBrand800, borderRadius: vw(3), borderWidth: step == 3 ? 3 : 1 }]}>
-            <Animated.View style={[styles.flex1, styles.w100, styles.h100, styles.positionAbsolute, { opacity: opacityAnimate }]} >
-              <CLASS.ViewGra800700 style={[styles.w100, styles.h100,]} />
-            </Animated.View>
-            <CLASS.ViewColCenter style={[styles.paddingH4vw, styles.paddingV6vw, styles.gap6vw,]}>
-              <CTEXT.NGT_Inter_DispLg_SemiBold color={NGHIACOLOR.NghiaBrand300}>{this.props.header}</CTEXT.NGT_Inter_DispLg_SemiBold>
-              {this.props.formular ?
-                <View style={[styles.borderRadius2vw, styles.paddingH4vw, styles.paddingV2vw, styles.justifyContentCenter, { backgroundColor: NGHIACOLOR.NghiaTransparentWhite10 }]}>
-                  <CTEXT.NGT_Inter_BodyLg_Reg style={[styles.textCenter]}>{this.props.formular}</CTEXT.NGT_Inter_BodyLg_Reg>
-                </View> :
-                <View style={[styles.paddingV3vw, styles.paddingH6vw, styles.borderRadius100, { backgroundColor: NGHIACOLOR.NghiaTransparentWhite30 }]}>
-                  <CTEXT.NGT_Inter_DispLg_SemiBold color={NGHIACOLOR.NghiaBrand300}>{step == 1 ? this.props.time + `"` : convertNumberToTime(this.props.time || 0)}</CTEXT.NGT_Inter_DispLg_SemiBold>
-                </View>
-              }
-              {
-                this.props.bottom ? <CTEXT.NGT_Inter_BodyLg_Reg color={NGHIACOLOR.NghiaBrand500} style={[styles.textCenter, styles.paddingH4vw]}>{this.props.bottom}</CTEXT.NGT_Inter_BodyLg_Reg> :
-                  <TouchableOpacity onPress={() => { stepFncControl() }} >
-                    <CLASS.ViewGra800700 style={[styles.justifyContentCenter, styles.borderRadius2vw, styles.paddingV3vw, styles.paddingH8vw, {}]}>
-                      <CTEXT.NGT_Inter_HeaderLg_Med>Sẵn sàng</CTEXT.NGT_Inter_HeaderLg_Med>
-                    </CLASS.ViewGra800700>
-                  </TouchableOpacity>
-              }
-            </CLASS.ViewColCenter>
-            <Animated.View style={{ height: timerExtraPaddingAnimate }} />
-          </CLASS.ViewColCenter>
-          {/* <TouchableOpacity style={[styles.w100, styles.borderRadius2vw, styles.overflowHidden, styles.shadowW0H05Black, { borderWidth: 2, borderColor: NGHIACOLOR.NghiaTransparentWhite60 }]}>
-            <CLASS.ViewGra700600 style={[styles.positionRelative, styles.w100, styles.flexRowCenter,]}>
-              <Animated.View style={[styles.flex1, styles.w100, styles.h100, styles.positionAbsolute, { backgroundColor: NGHIACOLOR.NghiaGray600, opacity: opacityAnimate }]}>
-              </Animated.View>
-              <CLASS.ViewRowCenter style={[styles.paddingV8vw,]}>
-                <CTEXT.NGT_Inter_HeaderLg_Bld>Bắt đầu</CTEXT.NGT_Inter_HeaderLg_Bld>
-                {ICON.leftHand(vw(8), vw(8))}
-              </CLASS.ViewRowCenter>
-            </CLASS.ViewGra700600>
-          </TouchableOpacity> */}
+  const TimerBox = React.memo(({ round, header, bottom, time, formular }: { round: number, header: string, bottom?: string, time?: number, formular?: string }) => {
+    const roundNum = React.useMemo(() => CurrentCache.currentGameLvl === 2 ? 12 : 5, [CurrentCache.currentGameLvl]);
+    const roundTime = React.useMemo(() => Array(roundNum).fill(0), [roundNum]);
 
-        </TouchableOpacity>
-      )
-    }
-  }
-
-  class RoundResult extends React.Component<{ round: number, time: number }> {
-    render(): React.ReactNode {
-      let roundNum = 5;
-      if (CurrentCache.currentGameLvl === 2) {
-        roundNum = 12;
-      }
-      let roundTime = Array(roundNum).fill(0);
-      return (
-        <View style={[styles.padding4vw, componentStyle.borderBrand800,]}>
-          <CLASS.ViewRow style={[styles.flex1, styles.borderRadius2vw, styles.overflowHidden]}>
-            <CLASS.ViewGra800700 style={[styles.w50, styles.flexRowCenter, styles.paddingV3vw]}>
-              <CTEXT.NGT_Inter_HeaderLg_Med>Kết quả</CTEXT.NGT_Inter_HeaderLg_Med>
-            </CLASS.ViewGra800700>
-
-            <CLASS.ViewGra800700 style={[styles.w50, styles.flexRowCenter, styles.paddingV3vw, styles.gap1vw]}>
-              <CTEXT.NGT_Inter_BodyLg_Med>Tốt nhất: </CTEXT.NGT_Inter_BodyLg_Med>
-              <View style={[styles.paddingV1vw, styles.paddingH2vw, styles.borderRadius2vw, { backgroundColor: NGHIACOLOR.NghiaTransparentDark30 }]}>
-                <CTEXT.NGT_Inter_BodyLg_Med>{lvlData[CurrentCache.currentGameLvl][2].toString()} {CurrentCache.user.best?.[CurrentCache.currentGameLvl] || null}</CTEXT.NGT_Inter_BodyLg_Med>
+    return (
+      <TouchableOpacity
+        disabled={step == 0}
+        onPressIn={stepFncControl}
+        onPressOut={() => {
+          console.log('press out');
+          step == 2 ? stepFncControl() : null
+        }}
+      >
+        <CLASS.ViewColCenter style={[styles.marginTop4vw, styles.positionRelative, styles.overflowHidden, { backgroundColor: NGHIACOLOR.NghiaTransparentDark30, borderColor: step == 3 ? 'red' : NGHIACOLOR.NghiaBrand800, borderRadius: vw(3), borderWidth: step == 3 ? 3 : 1 }]}>
+          <Animated.View style={[styles.flex1, styles.w100, styles.h100, styles.positionAbsolute, { opacity: opacityAnimate }]} >
+            <CLASS.ViewGra800700 style={[styles.w100, styles.h100,]} />
+          </Animated.View>
+          <CLASS.ViewColCenter style={[styles.paddingH4vw, styles.paddingV6vw, styles.gap6vw,]}>
+            <CTEXT.NGT_Inter_DispLg_SemiBold color={NGHIACOLOR.NghiaBrand300}>{header}</CTEXT.NGT_Inter_DispLg_SemiBold>
+            {formular ?
+              <View style={[styles.borderRadius2vw, styles.paddingH4vw, styles.paddingV2vw, styles.justifyContentCenter, { backgroundColor: NGHIACOLOR.NghiaTransparentWhite10 }]}>
+                <CTEXT.NGT_Inter_BodyLg_Reg style={[styles.textCenter]}>{formular}</CTEXT.NGT_Inter_BodyLg_Reg>
+              </View> :
+              <View style={[styles.paddingV3vw, styles.paddingH6vw, styles.borderRadius100, { backgroundColor: NGHIACOLOR.NghiaTransparentWhite30 }]}>
+                <CTEXT.NGT_Inter_DispLg_SemiBold color={NGHIACOLOR.NghiaBrand300}>{step == 1 ? time + `"` : convertNumberToTime(time || 0)}</CTEXT.NGT_Inter_DispLg_SemiBold>
               </View>
-            </CLASS.ViewGra800700>
-          </CLASS.ViewRow>
-
-          <CLASS.ViewRowBetweenCenter style={[styles.paddingV3vw,]}>
-            <CTEXT.NGT_Inter_BodyLg_Reg>Phương pháp <CTEXT.NGT_Inter_BodyLg_SemiBold color={NGHIACOLOR.NghiaBrand300}>{lvlData[CurrentCache.currentGameLvl][2].toString()}</CTEXT.NGT_Inter_BodyLg_SemiBold></CTEXT.NGT_Inter_BodyLg_Reg>
-            <CTEXT.NGT_Inter_BodyMd_Med>{roundNum - round} lượt còn lại</CTEXT.NGT_Inter_BodyMd_Med>
-          </CLASS.ViewRowBetweenCenter>
-
-          <CLASS.ViewRowBetweenCenter style={[styles.w100, styles.padding2vw, componentStyle.borderBrand800, styles.flexWrap]}>
+            }
             {
-              roundTime.map((item, index) => {
-                return (
-                  <CLASS.ViewColCenter key={index} style={[styles.padding2vw, styles.borderRadius10, styles.gap2vw, styles.w20, { backgroundColor: round == index + 1 ? NGHIACOLOR.NghiaTransparentWhite30 : undefined }]}>
-                    <CTEXT.NGT_Inter_BodyLg_Med>{index + 1}</CTEXT.NGT_Inter_BodyLg_Med>
-                    <View pointerEvents="none">{roundNum == 12 ? null : ICON.greenClock(vw(8), vw(8))}</View>
-                    <CLASS.ViewRowCenter style={[styles.border1white, styles.w100, styles.paddingH1vw, styles.borderRadius2vw, { backgroundColor: index == 1 ? 'white' : index == roundTime.length - 1 ? NGHIACOLOR.NghiaBrand600 : undefined, borderWidth: index == roundTime.length - 1 ? 0 : 1 }]}>
-                      <CTEXT.NGT_Inter_BodyLg_Med color={index == 1 ? NGHIACOLOR.NghiaBrand600 : 'white'}>{item}s</CTEXT.NGT_Inter_BodyLg_Med>
-                    </CLASS.ViewRowCenter>
-                  </CLASS.ViewColCenter>
-                )
-              })}
-          </CLASS.ViewRowBetweenCenter>
-        </View>
-      );
-    }
-  }
+              bottom ? <CTEXT.NGT_Inter_BodyLg_Reg color={NGHIACOLOR.NghiaBrand500} style={[styles.textCenter, styles.paddingH4vw]}>{bottom}</CTEXT.NGT_Inter_BodyLg_Reg> :
+                <TouchableOpacity onPress={() => { stepFncControl() }} >
+                  <CLASS.ViewGra800700 style={[styles.justifyContentCenter, styles.borderRadius2vw, styles.paddingV3vw, styles.paddingH8vw, {}]}>
+                    <CTEXT.NGT_Inter_HeaderLg_Med>Sẵn sàng</CTEXT.NGT_Inter_HeaderLg_Med>
+                  </CLASS.ViewGra800700>
+                </TouchableOpacity>
+            }
+          </CLASS.ViewColCenter>
+          <Animated.View style={{ height: timerExtraPaddingAnimate }} />
+        </CLASS.ViewColCenter>
+      </TouchableOpacity>
+    )
+  })
 
-  function renderTimeBox() {
+  const RoundResult: React.FC<{ round: number; time: number }> = React.memo(({ round }) => {
+    const roundNum = CurrentCache.currentGameLvl === 2 ? 12 : 5;
+    const roundTime = React.useMemo(() => Array(roundNum).fill(0), [roundNum]);
+
+    return (
+      <View style={[styles.padding4vw, componentStyle.borderBrand800]}>
+        <CLASS.ViewRow style={[styles.flex1, styles.borderRadius2vw, styles.overflowHidden]}>
+          <CLASS.ViewGra800700 style={[styles.w50, styles.flexRowCenter, styles.paddingV3vw]}>
+            <CTEXT.NGT_Inter_HeaderLg_Med>Kết quả</CTEXT.NGT_Inter_HeaderLg_Med>
+          </CLASS.ViewGra800700>
+
+          <CLASS.ViewGra800700 style={[styles.w50, styles.flexRowCenter, styles.paddingV3vw, styles.gap1vw]}>
+            <CTEXT.NGT_Inter_BodyLg_Med>Tốt nhất: </CTEXT.NGT_Inter_BodyLg_Med>
+            <View style={[styles.paddingV1vw, styles.paddingH2vw, styles.borderRadius2vw, { backgroundColor: NGHIACOLOR.NghiaTransparentDark30 }]}>
+              <CTEXT.NGT_Inter_BodyLg_Med>{lvlData[CurrentCache.currentGameLvl][2].toString()} {CurrentCache.user.best?.[CurrentCache.currentGameLvl] || null}</CTEXT.NGT_Inter_BodyLg_Med>
+            </View>
+          </CLASS.ViewGra800700>
+        </CLASS.ViewRow>
+
+        <CLASS.ViewRowBetweenCenter style={[styles.paddingV3vw]}>
+          <CTEXT.NGT_Inter_BodyLg_Reg>Phương pháp <CTEXT.NGT_Inter_BodyLg_SemiBold color={NGHIACOLOR.NghiaBrand300}>{lvlData[CurrentCache.currentGameLvl][2].toString()}</CTEXT.NGT_Inter_BodyLg_SemiBold></CTEXT.NGT_Inter_BodyLg_Reg>
+          <CTEXT.NGT_Inter_BodyMd_Med>{roundNum - round} lượt còn lại</CTEXT.NGT_Inter_BodyMd_Med>
+        </CLASS.ViewRowBetweenCenter>
+
+        <CLASS.ViewRowBetweenCenter style={[styles.w100, styles.padding2vw, componentStyle.borderBrand800, styles.flexWrap]}>
+          {roundTime.map((item, index) => (
+            <CLASS.ViewColCenter key={index} style={[styles.padding2vw, styles.borderRadius10, styles.gap2vw, styles.w20, { backgroundColor: round == index + 1 ? NGHIACOLOR.NghiaTransparentWhite30 : undefined }]}>
+              <CTEXT.NGT_Inter_BodyLg_Med>{index + 1}</CTEXT.NGT_Inter_BodyLg_Med>
+              <View pointerEvents="none">{roundNum == 12 ? null : ICON.greenClock(vw(8), vw(8))}</View>
+              <CLASS.ViewRowCenter style={[styles.border1white, styles.w100, styles.paddingH1vw, styles.borderRadius2vw, { backgroundColor: index == 1 ? 'white' : index == roundTime.length - 1 ? NGHIACOLOR.NghiaBrand600 : undefined, borderWidth: index == roundTime.length - 1 ? 0 : 1 }]}>
+                <CTEXT.NGT_Inter_BodyLg_Med color={index == 1 ? NGHIACOLOR.NghiaBrand600 : 'white'}>{item}s</CTEXT.NGT_Inter_BodyLg_Med>
+              </CLASS.ViewRowCenter>
+            </CLASS.ViewColCenter>
+          ))}
+        </CLASS.ViewRowBetweenCenter>
+      </View>
+    );
+  });
+
+  const renderTimeBox = React.useMemo(() => {
     let headerText = [
       `Scramble: ${multiMode ? `` : ``} lượt ${round}`,
       `Quan sát`,
@@ -281,7 +204,7 @@ export default function Game() {
       bottom={step === 0 ? '' : bottomText[step]}
       time={displayTime}
     />
-  }
+  }, [round, step, multiMode, displayTime, FOM])
 
   function stepFncControl() {
     console.log(step);
@@ -301,7 +224,7 @@ export default function Game() {
             setStep(3);
           }
         }
-        counter(inspectTime);
+        // counter(inspectTime);
         break;
       case 1:
         stopOpacityAnimatorBlinker();
@@ -331,13 +254,13 @@ export default function Game() {
 
   }, [step])
 
-  function renderItem() {
+  const renderItem = React.useMemo(() => {
     switch (multiMode) {
       case 1:
         return (
           <CLASS.ViewCol style={[styles.h100, styles.paddingH6vw, styles.gap4vw]}>
             <CLASS.LevelBeing icon={lvlData[CurrentCache.currentGameLvl][0]} title={lvlData[CurrentCache.currentGameLvl][1] as string} med={lvlData[CurrentCache.currentGameLvl][2] as string} time={totalTime} />
-            {renderTimeBox()}
+            {renderTimeBox}
             <RoundResult round={round} time={totalTime} />
             <RoundResult round={roundUser2} time={totalTimeUser2} />
           </CLASS.ViewCol>
@@ -347,12 +270,12 @@ export default function Game() {
         return (
           <CLASS.ViewCol style={[styles.h100, styles.paddingH6vw, styles.gap4vw]}>
             <CLASS.LevelBeing icon={lvlData[CurrentCache.currentGameLvl][0]} title={lvlData[CurrentCache.currentGameLvl][1] as string} med={lvlData[CurrentCache.currentGameLvl][2] as string} time={totalTime} />
-            {renderTimeBox()}
+            {renderTimeBox}
             <RoundResult round={round} time={totalTime} />
           </CLASS.ViewCol>
         )
     }
-  }
+  }, [multiMode, CurrentCache.currentGameLvl, round, roundUser2, totalTime, totalTimeUser2, renderTimeBox])
 
 
 
@@ -375,7 +298,7 @@ export default function Game() {
       >
         <ScrollView style={[styles.flex1]}
         >
-          {renderItem()}
+          {renderItem}
 
           {marginBottomForScrollView()}
         </ScrollView>
