@@ -34,6 +34,7 @@ export default function Game() {
   };
 
   // TIMER VAR
+  const [colorFullFormat, setColorFullFormat] = React.useState<0 | 1>(0);
   const [inspectTime, setInspectTime] = React.useState<number>(lvlData[CurrentCache.currentGameLvl][3] as number);
   const [displayTime, setDisplayTime] = React.useState<number>(0);
   const [timerboxHeaderStr, setTimerboxHeaderStr] = React.useState<string>(`Scramble: ${multiMode ? `` : ``} lượt ${round + 1}`);
@@ -99,6 +100,7 @@ export default function Game() {
   let counterTimeoutId: number | null = null;
 
   // Memoize the counter function for improved performance
+  const [countDownEnded, setCountDownEnded] = useState(false)
   const memoizedCounter = useCallback((second: number) => {
     if (second > 0) {
       counterTimeoutId = window.setTimeout(() => {
@@ -106,7 +108,8 @@ export default function Game() {
         memoizedCounter(second - 1); // Use memoized version
       }, 1000);
     } else {
-      setStep(2);
+      console.log('end count');
+      setCountDownEnded(true)
       counterTimeoutId = null;
     }
   }, []);
@@ -115,6 +118,7 @@ export default function Game() {
       clearTimeout(counterTimeoutId);
       counterTimeoutId = null;
     }
+    setColorFullFormat(1)
     setDisplayTime(0);
     setInspectTime(0);
   }, []);
@@ -166,33 +170,38 @@ export default function Game() {
   }, []);
   // END OF OPACITY ANIMATOR <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-  const stepFncControl = useCallback(() => {
-    console.log('stepfnccontrol ' + step);
-
-    switch (step) {
+  const stepFncControl = useCallback((forceStep?: number) => {
+    let localStep = step
+    console.log('stepfnccontrol ' + localStep);
+    if (forceStep) {
+      localStep = forceStep;
+    }
+    switch (localStep) {
       case 0:
         setInspectTime(lvlData[CurrentCache.currentGameLvl][3] as number);
         setRound(prevRound => prevRound + 1);
         handleTimerExtraPadding(vw(20));
+        setColorFullFormat(0)
         setDisplayTime(inspectTime);
         memoizedCounter(inspectTime);
-        opacityAnimatorBlinker();
+        setCountDownEnded(false)
+        // opacityAnimatorBlinker();
         // content
         setTimerboxHeaderStr(`Quan sát`)
         setTimerboxBottomStr(`Chạm tay của bạn vào Vùng này khi sẵn sàng`)
         break;
       case 1:
-        stopOpacityAnimatorBlinker();
+        // stopOpacityAnimatorBlinker();
         handleOpacityAnimation(0);
-        endCounter();
         // content
         setTimerboxHeaderStr(`Sẵn sàng`)
         setTimerboxBottomStr(`Bỏ chạm để bắt đầu đếm giờ`)
         break;
       case 2:
+        endCounter();
         handleStartStop();
         setInspectTime(0);
-        opacityAnimatorBlinker();
+        // opacityAnimatorBlinker();
         // content
         setTimerboxHeaderStr(`Đang đếm thời gian`)
         setTimerboxBottomStr(`Chạm lại vào Vùng này để kết thúc bộ đếm`)
@@ -200,23 +209,43 @@ export default function Game() {
       case 3:
         handleStartStop();
         setInspectTime(0);
-        stopOpacityAnimatorBlinker();
+        // stopOpacityAnimatorBlinker();
         handleTimerExtraPadding(0);
+        setCountDownEnded(false)
         setTotalTime(displayTime);
         // content
         setTimerboxHeaderStr(`Kết quả lượt ${round}`)
         setTimerboxBottomStr(`Chạm tay của bạn vào Vùng này khi sẵn sàng với lượt chơi thứ ${round + 1}`)
         break;
       case 4:
-        setTimerboxHeaderStr(`Scramble: ${multiMode ? `` : ``} lượt ${round + 1}`)
+        setTimerboxHeaderStr(`Lượt tiếp theo: ${multiMode ? `` : ``} lượt ${round + 1}`)
         setTimerboxBottomStr(``)
-        setStep(0);
         break;
       default:
+        setStep(0)
         break;
     }
-    setStep(prevStep => prevStep + 1);
+    localStep > 4 ? setStep(0) : setStep(localStep + 1);
+    console.log('after stepfnccontrol ' + localStep);
+
   }, [step, inspectTime, displayTime, handleStartStop, memoizedCounter, stopOpacityAnimatorBlinker, handleOpacityAnimation]);
+
+  useEffect(() => {
+    if (countDownEnded === true) {
+      stepFncControl(2)
+    }
+  }, [countDownEnded])
+
+  useEffect(() => {
+    if (step == 1 || step == 3) {
+      console.log('blick');
+      opacityAnimatorBlinker();
+    } else {
+      console.log('no blink');
+      
+      stopOpacityAnimatorBlinker();
+    }
+  }, [step])
 
   const HEADER = useMemo(() => {
     return (
@@ -255,7 +284,7 @@ export default function Game() {
 
   const TIMERBOX_READYBTN = useMemo(() => {
     return (
-      <TouchableOpacity onPress={stepFncControl}>
+      <TouchableOpacity onPress={() => stepFncControl()}>
         <CLASS.ViewGra800700 style={[styles.justifyContentCenter, styles.borderRadius2vw, styles.paddingV3vw, styles.paddingH8vw]}>
           <CTEXT.NGT_Inter_HeaderLg_Med>Sẵn sàng</CTEXT.NGT_Inter_HeaderLg_Med>
         </CLASS.ViewGra800700>
@@ -311,7 +340,7 @@ export default function Game() {
       return nextProps.round !== this.props.round;
     }
     render(): React.ReactNode {
-      return step === 0 ? TIMERBOX_READYBTN : TIMERBOX_BOTTOM
+      return step === 0 || step === 5 ? TIMERBOX_READYBTN : TIMERBOX_BOTTOM
     }
   }
 
@@ -323,9 +352,9 @@ export default function Game() {
         <ScrollView style={[styles.flex1]}>
           <CLASS.ViewCol style={[styles.h100, styles.paddingH6vw, styles.gap4vw]}>
             {LEVELBEING}
-            <TouchableOpacity
+            <Pressable
               disabled={step === 0}
-              onPressIn={stepFncControl}
+              onPressIn={() => stepFncControl()}
               onPressOut={() => {
                 if (step === 2) stepFncControl();
               }}
@@ -337,9 +366,9 @@ export default function Game() {
                 <CLASS.ViewColCenter style={[styles.paddingH4vw, styles.paddingV6vw, styles.gap6vw]}>
                   {TIMERBOX_HEADER}
                   {
-                    step === 0 ? TIMERBOX_FOMULAR :
+                    step === 0 || step === 5 ? TIMERBOX_FOMULAR :
                       <View style={[styles.paddingV3vw, styles.paddingH6vw, styles.borderRadius100, { backgroundColor: NGHIACOLOR.NghiaTransparentWhite30 }]}>
-                        <CTEXT.NGT_Inter_DispLg_SemiBold color={NGHIACOLOR.NghiaBrand300}>{step === 1 ? `${displayTime}"` : convertNumberToTime(displayTime || 0)}</CTEXT.NGT_Inter_DispLg_SemiBold>
+                        <CTEXT.NGT_Inter_DispLg_SemiBold color={NGHIACOLOR.NghiaBrand300}>{colorFullFormat === 0 ? `${displayTime}"` : convertNumberToTime(displayTime || 0)}</CTEXT.NGT_Inter_DispLg_SemiBold>
                       </View>
                   }
 
@@ -348,7 +377,7 @@ export default function Game() {
                 <Animated.View style={{ height: timerExtraPaddingAnimate }} />
               </CLASS.ViewColCenter>
 
-            </TouchableOpacity>
+            </Pressable>
 
             <View style={[styles.padding4vw, componentStyle.borderBrand800]}>
               {BESTRESULT}
