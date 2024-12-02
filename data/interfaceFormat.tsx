@@ -10,6 +10,7 @@ export interface UserFormat {
     star: number
     id: string
     best?: [number, number, number]
+    avtar?: string
 }
 
 export interface MatchHistoryFormat {
