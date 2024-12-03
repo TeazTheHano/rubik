@@ -15,7 +15,7 @@ import { UserFormat } from "../interfaceFormat";
 export interface CurrentCache {
     user: UserFormat;
     currentGameLvl: number
-    multiMode: 0 | 1
+    multiMode: 0 | 1 | 2
 }
 
 export interface Action {

@@ -615,7 +615,7 @@ export class LevelChoosing extends Component<{ icon: any, title: string, med: st
     }
 }
 
-export class LevelBeing extends Component<{ icon: any, title: string, med: string, time: number }> {
+export class LevelBeing extends Component<{ icon: any, title: string, med: string, time: number, time2?: number }> {
     render(): React.ReactNode {
         return (
             <ViewRowCenter style={[styles.positionRelative, { height: vw(18) }]}>
@@ -633,9 +633,20 @@ export class LevelBeing extends Component<{ icon: any, title: string, med: strin
                         </ViewCol>
                     </ViewRow>
 
-                    <View style={[styles.padding2vw, styles.borderRadius100, { backgroundColor: NGHIACOLOR.NghiaTransparentDark30 }]}>
-                        <CTEXT.NGT_Inter_BodyMd_SemiBold color={NGHIACOLOR.NghiaBrand300}>Tổng {convertNumberToTime(this.props.time)}</CTEXT.NGT_Inter_BodyMd_SemiBold>
-                    </View>
+                    {this.props.time2 != undefined ?
+                        <ViewColStartBetween style={[styles.gap1vw]}>
+                            <View style={[styles.paddingH2vw, styles.paddingV1vw, styles.borderRadius100, { backgroundColor: NGHIACOLOR.NghiaTransparentDark30 }]}>
+                                <CTEXT.NGT_Inter_BodyMd_SemiBold style={[styles.textRight]} color={NGHIACOLOR.NghiaBrand300}>Bạn - {convertNumberToTime(this.props.time)}</CTEXT.NGT_Inter_BodyMd_SemiBold>
+                            </View>
+                            <View style={[styles.paddingH2vw, styles.paddingV1vw, styles.borderRadius100, { backgroundColor: NGHIACOLOR.NghiaTransparentDark30 }]}>
+                                <CTEXT.NGT_Inter_BodyMd_SemiBold style={[styles.textRight]} color={NGHIACOLOR.NghiaBrand300}>Khách - {convertNumberToTime(this.props.time2)}</CTEXT.NGT_Inter_BodyMd_SemiBold>
+                            </View>
+                        </ViewColStartBetween>
+                        :
+                        <View style={[styles.padding2vw, styles.borderRadius100, { backgroundColor: NGHIACOLOR.NghiaTransparentDark30 }]}>
+                            <CTEXT.NGT_Inter_BodyMd_SemiBold color={NGHIACOLOR.NghiaBrand300}>Tổng {convertNumberToTime(this.props.time)}</CTEXT.NGT_Inter_BodyMd_SemiBold>
+                        </View>
+                    }
 
                 </ViewRowBetweenCenter>
             </ViewRowCenter>

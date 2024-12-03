@@ -19,6 +19,7 @@ export default function Duet() {
 
   const [roomID, setRoomID] = React.useState<string>('')
   const [isCreateNew, setIsCreateNew] = React.useState<boolean>(false)
+  const [isOffline, setIsOffline] = React.useState<boolean>(false)
   const [isPrivate, setIsPrivate] = React.useState<boolean>(false)
   const [LevelChoosing, setLevelChoosing] = React.useState<number | null>(null)
   const [RoomPassword, setRoomPassword] = React.useState<string>('')
@@ -95,29 +96,33 @@ export default function Duet() {
                   return <TouchableOpacity key={index} onPress={() => setLevelChoosing(index)}><CLASS.LevelChoosing icon={item[0]} title={item[1] as string} med={item[2] as string} time={item[3] as number} isChose={index === LevelChoosing} /></TouchableOpacity>
                 })
               }
+              {
+                isOffline ? null :
+                  <>
+                    <CTEXT.NGT_Inter_HeaderMd_SemiBold>Mật khẩu của phòng</CTEXT.NGT_Inter_HeaderMd_SemiBold>
+                    <CLASS.ViewRowBetweenCenter style={[styles.gap4vw]}>
+                      <CLASS.ViewRowStartCenter style={[styles.flex1, styles.borderRadius2vw, styles.padding2vw, styles.paddingLeft4vw, { backgroundColor: NGHIACOLOR.NghiaTransparentWhite30 }]}>
+                        <CTEXT.NGT_Inter_BodyLg_Reg color={NGHIACOLOR.NghiaBrand300}>Phòng số: <CTEXT.NGT_Inter_HeaderMd_SemiBold>{roomID}</CTEXT.NGT_Inter_HeaderMd_SemiBold></CTEXT.NGT_Inter_BodyLg_Reg>
+                      </CLASS.ViewRowStartCenter>
+                      <CLASS.ViewRowCenter>
+                        <CTEXT.NGT_Inter_HeaderMd_SemiBold>Phòng kín </CTEXT.NGT_Inter_HeaderMd_SemiBold>
+                        <Switch value={isPrivate}
+                          onValueChange={(value) => { setIsPrivate(value) }}
+                          thumbColor={NGHIACOLOR.NghiaBrand600}
+                          trackColor={{ false: NGHIACOLOR.NghiaGray500, true: NGHIACOLOR.NghiaBrand300 }}
+                        />
+                      </CLASS.ViewRowCenter>
+                    </CLASS.ViewRowBetweenCenter>
 
-              <CTEXT.NGT_Inter_HeaderMd_SemiBold>Mật khẩu của phòng</CTEXT.NGT_Inter_HeaderMd_SemiBold>
-              <CLASS.ViewRowBetweenCenter style={[styles.gap4vw]}>
-                <CLASS.ViewRowStartCenter style={[styles.flex1, styles.borderRadius2vw, styles.padding2vw, styles.paddingLeft4vw, { backgroundColor: NGHIACOLOR.NghiaTransparentWhite30 }]}>
-                  <CTEXT.NGT_Inter_BodyLg_Reg color={NGHIACOLOR.NghiaBrand300}>Phòng số: <CTEXT.NGT_Inter_HeaderMd_SemiBold>{roomID}</CTEXT.NGT_Inter_HeaderMd_SemiBold></CTEXT.NGT_Inter_BodyLg_Reg>
-                </CLASS.ViewRowStartCenter>
-                <CLASS.ViewRowCenter>
-                  <CTEXT.NGT_Inter_HeaderMd_SemiBold>Phòng kín </CTEXT.NGT_Inter_HeaderMd_SemiBold>
-                  <Switch value={isPrivate}
-                    onValueChange={(value) => { setIsPrivate(value) }}
-                    thumbColor={NGHIACOLOR.NghiaBrand600}
-                    trackColor={{ false: NGHIACOLOR.NghiaGray500, true: NGHIACOLOR.NghiaBrand300 }}
-                  />
-                </CLASS.ViewRowCenter>
-              </CLASS.ViewRowBetweenCenter>
-
-              <TextInput
-                value={RoomPassword}
-                onChangeText={setRoomPassword}
-                placeholder='Đặt mật khẩu ở đây'
-                placeholderTextColor={NGHIACOLOR.NghiaGray400}
-                style={[styles.borderRadius2vw, styles.paddingH4vw, styles.paddingV2vw, styles.border1, styles.w100, styles.border1, { borderColor: NGHIACOLOR.NghiaGray400, fontFamily: 'Inter-Medium', fontSize: vw(3.5), backgroundColor: NGHIACOLOR.NghiaTransparentDark30, color: 'white' }]}
-              />
+                    <TextInput
+                      value={RoomPassword}
+                      onChangeText={setRoomPassword}
+                      placeholder='Đặt mật khẩu ở đây'
+                      placeholderTextColor={NGHIACOLOR.NghiaGray400}
+                      style={[styles.borderRadius2vw, styles.paddingH4vw, styles.paddingV2vw, styles.border1, styles.w100, styles.border1, { borderColor: NGHIACOLOR.NghiaGray400, fontFamily: 'Inter-Medium', fontSize: vw(3.5), backgroundColor: NGHIACOLOR.NghiaTransparentDark30, color: 'white' }]}
+                    />
+                  </>
+              }
 
               <CLASS.ViewGra800600 style={[styles.w100, styles.borderRadius2vw]}>
                 <CLASS.RoundBtn
@@ -138,13 +143,23 @@ export default function Duet() {
             <Image style={[styles.marginTop4vw, { width: vw(84), height: vw(54), borderTopRightRadius: vw(8), borderTopLeftRadius: vw(8) }] as ImageStyle} source={require('@/assets/photos/duet.jpeg')} />
             <CLASS.ViewGra800600 style={[styles.w100, styles.borderRadius2vw]}>
               <CLASS.RoundBtn
-                title='Tạo phòng'
+                title='Tạo phòng Online'
                 onPress={() => { setIsCreateNew(true) }}
                 textClass={CTEXT.NGT_Inter_HeaderLg_SemiBold}
                 textColor={clrStyle.white}
                 customStyle={[styles.justifyContentCenter]}
               />
             </CLASS.ViewGra800600>
+
+            <CLASS.ViewGra600500 style={[styles.w100, styles.borderRadius2vw, styles.marginVertical2vw]}>
+              <CLASS.RoundBtn
+                title={`Tạo phòng Offline \n 2 người chơi trên cùng 1 thiết bị`}
+                onPress={() => { setIsCreateNew(true); setIsOffline(true) }}
+                textClass={CTEXT.NGT_Inter_HeaderLg_SemiBold}
+                textColor={clrStyle.white}
+                customStyle={[styles.justifyContentCenter]}
+              />
+            </CLASS.ViewGra600500>
 
             <CLASS.ViewCol style={[componentStyle.borderBrand800, styles.gap4vw, styles.marginVertical4vw, styles.w100, styles.padding4vw]}>
               <CTEXT.NGT_Inter_HeaderMd_SemiBold>Bạn đã có phòng rồi?</CTEXT.NGT_Inter_HeaderMd_SemiBold>

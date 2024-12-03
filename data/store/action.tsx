@@ -27,7 +27,7 @@ export const currentSaveGameLvl = (lvl: 0 | 1 | 2) => {
 }
 
 export const SET_CURRENT_MULTI_MODE = 'SET_CURRENT_MULTI_MODE'
-export const currentSaveMultiMode = (mode: 0 | 1 ) => {
+export const currentSaveMultiMode = (mode: 0 | 1 | 2) => {
     return {
         type: SET_CURRENT_MULTI_MODE,
         payload: mode

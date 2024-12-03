@@ -692,7 +692,7 @@ export default function Game() {
         stopOpacityAnimatorBlinker();
         handleOpacityAnimation(0);
         endCounter();
-        break;
+        // break;
       case 2:
         handleStartStop();
         setInspectTime(0);

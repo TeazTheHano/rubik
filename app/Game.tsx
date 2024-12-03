@@ -16,7 +16,9 @@ import { lvlData } from '@/data/factoryData';
 export default function Game() {
   const navigation = useNavigation();
   const [CurrentCache, dispatch] = React.useContext(RootContext);
-  const [multiMode, setMultiMode] = React.useState<0 | 1>(CurrentCache.multiMode);
+  const [multiMode, setMultiMode] = React.useState<0 | 1 | 2>(CurrentCache.multiMode);
+
+  const [currentPlayerIsUser2, setCurrentPlayerIsUser2] = React.useState(false)
 
   const [totalTime, setTotalTime] = React.useState<number>(0);
   const [totalTimeUser2, setTotalTimeUser2] = React.useState<number>(0);
@@ -37,10 +39,11 @@ export default function Game() {
   const [colorFullFormat, setColorFullFormat] = React.useState<0 | 1>(0);
   const [inspectTime, setInspectTime] = React.useState<number>(lvlData[CurrentCache.currentGameLvl][3] as number);
   const [displayTime, setDisplayTime] = React.useState<number>(0);
-  const [timerboxHeaderStr, setTimerboxHeaderStr] = React.useState<string>(`Scramble: ${multiMode ? `` : ``} lượt ${round + 1}`);
+  const [timerboxHeaderStr, setTimerboxHeaderStr] = React.useState<string>(`Scramble: ${multiMode ? `Bạn - ` : ``} lượt ${round + 1}`);
   const [timerboxBottomStr, setTimerboxBottomStr] = React.useState<string>('');
 
-  const [roundTime, setRoundTime] = React.useState<number[]>(Array(roundNum).fill(0));
+  const [roundTimeUser1, setRoundTimeUser1] = React.useState<number[]>(Array(roundNum).fill(0));
+  const [roundTimeUser2, setRoundTimeUser2] = React.useState<number[]>(Array(roundNum).fill(0));
   const FOM = `F, D, U, R, L, B, F’, D’, U’, R’, L’, B’, F2, D2, U2, R2, L2, B2`;
 
   // STOPWATCH FUNCTION >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> 
@@ -170,28 +173,60 @@ export default function Game() {
   }, []);
   // END OF OPACITY ANIMATOR <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
+  const handleResult = () => {
+    const sumRoundTime = (roundTime: number[], round: number) => {
+      return roundTime.slice(1, round).reduce((acc, time) => acc + time, 0) / (round - 1);
+    }
+    if (multiMode) {
+      if (currentPlayerIsUser2) {
+        let newRoundTimeUser2 = [...roundTimeUser2];
+        newRoundTimeUser2[roundUser2] = displayTime;
+        console.log(newRoundTimeUser2);
+        setRoundTimeUser2(newRoundTimeUser2);
+        setTotalTimeUser2(sumRoundTime(roundTimeUser2, roundUser2) || 0);
+        setRoundUser2(prev => prev + 1);
+      } else {
+        let newRoundTimeUser1 = [...roundTimeUser1];
+        newRoundTimeUser1[round] = displayTime;
+        console.log(newRoundTimeUser1, " - " + round);
+        setRoundTimeUser1(newRoundTimeUser1);
+        setTotalTime(sumRoundTime(roundTimeUser1, round) || 0);
+        setRound(prev => prev + 1);
+      }
+      setCurrentPlayerIsUser2(!currentPlayerIsUser2);
+    } else {
+      let newRoundTimeUser1 = [...roundTimeUser1];
+      newRoundTimeUser1[round] = displayTime;
+      console.log(newRoundTimeUser1, " - " + round);
+      setRoundTimeUser1(newRoundTimeUser1);
+      setTotalTime(sumRoundTime(roundTimeUser1, round) || 0);
+      setRound(prev => prev + 1);
+    }
+  }
+
   const stepFncControl = useCallback((forceStep?: number) => {
     let localStep = step
     console.log('stepfnccontrol ' + localStep);
+    console.log(`totalTime `, totalTime, totalTimeUser2);
+
     if (forceStep) {
       localStep = forceStep;
     }
     switch (localStep) {
       case 0:
         setInspectTime(lvlData[CurrentCache.currentGameLvl][3] as number);
-        setRound(prevRound => prevRound + 1);
         handleTimerExtraPadding(vw(20));
         setColorFullFormat(0)
         setDisplayTime(inspectTime);
         memoizedCounter(inspectTime);
         setCountDownEnded(false)
-        // opacityAnimatorBlinker();
+        opacityAnimatorBlinker();
         // content
         setTimerboxHeaderStr(`Quan sát`)
         setTimerboxBottomStr(`Chạm tay của bạn vào Vùng này khi sẵn sàng`)
         break;
       case 1:
-        // stopOpacityAnimatorBlinker();
+        stopOpacityAnimatorBlinker();
         handleOpacityAnimation(0);
         // content
         setTimerboxHeaderStr(`Sẵn sàng`)
@@ -201,7 +236,7 @@ export default function Game() {
         endCounter();
         handleStartStop();
         setInspectTime(0);
-        // opacityAnimatorBlinker();
+        opacityAnimatorBlinker();
         // content
         setTimerboxHeaderStr(`Đang đếm thời gian`)
         setTimerboxBottomStr(`Chạm lại vào Vùng này để kết thúc bộ đếm`)
@@ -209,17 +244,20 @@ export default function Game() {
       case 3:
         handleStartStop();
         setInspectTime(0);
-        // stopOpacityAnimatorBlinker();
+        stopOpacityAnimatorBlinker();
+        stopOpacityAnimatorBlinker();
+        stopOpacityAnimatorBlinker();
         handleTimerExtraPadding(0);
         setCountDownEnded(false)
-        setTotalTime(displayTime);
+        handleResult()
         // content
-        setTimerboxHeaderStr(`Kết quả lượt ${round}`)
-        setTimerboxBottomStr(`Chạm tay của bạn vào Vùng này khi sẵn sàng với lượt chơi thứ ${round + 1}`)
+        setTimerboxHeaderStr(`Kết quả lượt ${multiMode ? currentPlayerIsUser2 ? roundUser2 + 1 : round + 1 : round + 1}`)
+        setTimerboxBottomStr(`Chạm tay của bạn vào Vùng này khi sẵn sàng với lượt chơi thứ ${multiMode ? currentPlayerIsUser2 ? roundUser2 + 2 : round + 2 : round + 2}`)
         break;
       case 4:
-        setTimerboxHeaderStr(`Lượt tiếp theo: ${multiMode ? `` : ``} lượt ${round + 1}`)
+        setTimerboxHeaderStr(`Lượt tiếp theo: ${multiMode ? currentPlayerIsUser2 ? 'Khách' : 'Bạn' : 'Bạn'} - lượt ${multiMode ? currentPlayerIsUser2 ? roundUser2 + 1 : round + 1 : round + 1}`)
         setTimerboxBottomStr(``)
+        handleReset()
         break;
       default:
         setStep(0)
@@ -232,20 +270,10 @@ export default function Game() {
 
   useEffect(() => {
     if (countDownEnded === true) {
+      stopOpacityAnimatorBlinker();
       stepFncControl(2)
     }
   }, [countDownEnded])
-
-  useEffect(() => {
-    if (step == 1 || step == 3) {
-      console.log('blick');
-      opacityAnimatorBlinker();
-    } else {
-      console.log('no blink');
-      
-      stopOpacityAnimatorBlinker();
-    }
-  }, [step])
 
   const HEADER = useMemo(() => {
     return (
@@ -263,8 +291,8 @@ export default function Game() {
   }, [])
 
   const LEVELBEING = useMemo(() => {
-    return <CLASS.LevelBeing icon={commonProps.icon} title={commonProps.title} time={totalTime} med={commonProps.med} />
-  }, [])
+    return <CLASS.LevelBeing icon={commonProps.icon} title={commonProps.title} time={totalTime} med={commonProps.med} time2={multiMode ? totalTimeUser2 : undefined} />
+  }, [totalTime, totalTimeUser2])
 
   const TIMERBOX_HEADER = useMemo(() => {
     return <CTEXT.NGT_Inter_DispLg_SemiBold color={NGHIACOLOR.NghiaBrand300}>{timerboxHeaderStr}</CTEXT.NGT_Inter_DispLg_SemiBold>
@@ -308,6 +336,8 @@ export default function Game() {
     )
   }, [])
 
+  const BLUECLOCKICON = useMemo(() => { return ICON.greenClock(vw(8), vw(8)) }, [])
+
   class RoundResult extends React.Component<{ round: number }> {
     shouldComponentUpdate(nextProps: Readonly<{ round: number }>, nextState: Readonly<{}>, nextContext: any): boolean {
       return nextProps.round !== this.props.round;
@@ -319,17 +349,36 @@ export default function Game() {
             <CTEXT.NGT_Inter_BodyLg_Reg>Phương pháp <CTEXT.NGT_Inter_BodyLg_SemiBold color={NGHIACOLOR.NghiaBrand300}>{lvlData[CurrentCache.currentGameLvl][2].toString()}</CTEXT.NGT_Inter_BodyLg_SemiBold></CTEXT.NGT_Inter_BodyLg_Reg>
             <CTEXT.NGT_Inter_BodyMd_Med>{roundNum - this.props.round} lượt còn lại</CTEXT.NGT_Inter_BodyMd_Med>
           </CLASS.ViewRowBetweenCenter>
+          {multiMode ? <CTEXT.NGT_Inter_BodyLg_Reg style={[styles.marginTop4vw, styles.marginBottom2vw]}>Kết quả của bạn: </CTEXT.NGT_Inter_BodyLg_Reg> : null}
           <CLASS.ViewRowBetweenCenter style={[styles.w100, styles.padding2vw, componentStyle.borderBrand800, styles.flexWrap]}>
-            {roundTime.map((item, index) => (
-              <CLASS.ViewColCenter key={index} style={[styles.padding2vw, styles.borderRadius10, styles.gap2vw, styles.w20, { backgroundColor: round === index + 1 ? NGHIACOLOR.NghiaTransparentWhite30 : undefined }]}>
+            {roundTimeUser1.map((item, index) => (
+              <CLASS.ViewColCenter key={index} style={[styles.padding2vw, styles.borderRadius10, styles.gap2vw, styles.w20, { backgroundColor: round === index && !currentPlayerIsUser2 ? NGHIACOLOR.NghiaTransparentWhite30 : undefined }]}>
                 <CTEXT.NGT_Inter_BodyLg_Med>{index + 1}</CTEXT.NGT_Inter_BodyLg_Med>
-                <View pointerEvents="none">{roundNum === 12 ? null : ICON.greenClock(vw(8), vw(8))}</View>
-                <CLASS.ViewRowCenter style={[styles.border1white, styles.w100, styles.paddingH1vw, styles.borderRadius2vw, { backgroundColor: index === 1 ? 'white' : index === roundTime.length - 1 ? NGHIACOLOR.NghiaBrand600 : undefined, borderWidth: index === roundTime.length - 1 ? 0 : 1 }]}>
-                  <CTEXT.NGT_Inter_BodyLg_Med color={index === 1 ? NGHIACOLOR.NghiaBrand600 : 'white'}>{item}s</CTEXT.NGT_Inter_BodyLg_Med>
+                <View pointerEvents="none">{roundNum === 12 ? null : BLUECLOCKICON}</View>
+                <CLASS.ViewRowCenter style={[styles.border1white, styles.w100, styles.paddingH1vw, styles.borderRadius2vw, { backgroundColor: index === 1 ? 'white' : index === roundTimeUser1.length - 1 ? NGHIACOLOR.NghiaBrand600 : undefined, borderWidth: index === roundTimeUser1.length - 1 ? 0 : 1 }]}>
+                  <CTEXT.NGT_Inter_BodyLg_Med color={index === 1 ? NGHIACOLOR.NghiaBrand600 : 'white'}>{(Math.round(item) / 1000).toFixed(1)}s</CTEXT.NGT_Inter_BodyLg_Med>
                 </CLASS.ViewRowCenter>
               </CLASS.ViewColCenter>
             ))}
           </CLASS.ViewRowBetweenCenter>
+          {
+            multiMode ?
+              <>
+                <CTEXT.NGT_Inter_BodyLg_Reg style={[styles.marginTop4vw, styles.marginBottom2vw]}>Kết quả của khách: </CTEXT.NGT_Inter_BodyLg_Reg>
+                <CLASS.ViewRowBetweenCenter style={[styles.w100, styles.padding2vw, componentStyle.borderBrand800, styles.flexWrap]}>
+                  {roundTimeUser2.map((item, index) => (
+                    <CLASS.ViewColCenter key={index} style={[styles.padding2vw, styles.borderRadius10, styles.gap2vw, styles.w20, { backgroundColor: roundUser2 === index && currentPlayerIsUser2 ? NGHIACOLOR.NghiaTransparentWhite30 : undefined }]}>
+                      <CTEXT.NGT_Inter_BodyLg_Med>{index + 1}</CTEXT.NGT_Inter_BodyLg_Med>
+                      <View pointerEvents="none">{roundNum === 12 ? null : ICON.greenClock(vw(8), vw(8))}</View>
+                      <CLASS.ViewRowCenter style={[styles.border1white, styles.w100, styles.paddingH1vw, styles.borderRadius2vw, { backgroundColor: index === 1 ? 'white' : index === roundTimeUser2.length - 1 ? NGHIACOLOR.NghiaBrand600 : undefined, borderWidth: index === roundTimeUser2.length - 1 ? 0 : 1 }]}>
+                        <CTEXT.NGT_Inter_BodyLg_Med color={index === 1 ? NGHIACOLOR.NghiaBrand600 : 'white'}>{(Math.round(item) / 1000).toFixed(1)}s</CTEXT.NGT_Inter_BodyLg_Med>
+                      </CLASS.ViewRowCenter>
+                    </CLASS.ViewColCenter>
+                  ))}
+                </CLASS.ViewRowBetweenCenter>
+              </>
+              : null
+          }
         </>
       )
     }
