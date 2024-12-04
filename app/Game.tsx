@@ -7,7 +7,7 @@ import { avatarComponet, convertNumberToTime, marginBottomForScrollView } from '
 import * as ICON from '@/assets/svgXml';
 import * as CLASS from '@/assets/Class';
 import * as CTEXT from '@/assets/CustomText';
-import { DefaultTheme, useNavigation } from '@react-navigation/native';
+import { CommonActions, DefaultTheme, useNavigation } from '@react-navigation/native';
 import { MatchHistoryFormat } from '@/data/interfaceFormat';
 import { getStorageList } from '@/data/storageFunc';
 import { RootContext } from '@/data/store';
@@ -26,6 +26,8 @@ export default function Game() {
   const [roundUser2, setRoundUser2] = React.useState<number>(0);
   const [step, setStep] = React.useState<number>(0);
   const [match, setMatch] = React.useState<MatchHistoryFormat>();
+
+  const [afterMatch, setAfterMatch] = React.useState(false)
 
   const [roundNum, setRoundNum] = React.useState<12 | 5>(CurrentCache.currentGameLvl === 2 ? 12 : 5);
 
@@ -251,14 +253,20 @@ export default function Game() {
         setCountDownEnded(false)
         handleResult()
         // content
-        setTimerboxHeaderStr(`Kết quả lượt ${multiMode ? currentPlayerIsUser2 ? roundUser2 + 1 : round + 1 : round + 1}`)
-        setTimerboxBottomStr(`Chạm tay của bạn vào Vùng này khi sẵn sàng với lượt chơi thứ ${multiMode ? currentPlayerIsUser2 ? roundUser2 + 2 : round + 2 : round + 2}`)
+        setTimerboxHeaderStr(`Kết quả lượt ${multiMode ? currentPlayerIsUser2 ? roundUser2 + 1 : round + 1 : round + 1} ${multiMode ? currentPlayerIsUser2 ? 'của Khách' : 'của Bạn' : ''}`)
+        setTimerboxBottomStr(!(multiMode ? ((roundUser2 + 1) == roundNum) : ((round + 1) == roundNum)) ? `Chạm tay của bạn vào Vùng này khi sẵn sàng với lượt chơi thứ ${multiMode ? currentPlayerIsUser2 ? (round + 1) : (roundUser2 + 1) : (round + 2)} ${multiMode ? !currentPlayerIsUser2 ? 'của Khách' : 'của Bạn' : ''}` : `Chạm để xem kết quả`)
         break;
       case 4:
-        setTimerboxHeaderStr(`Lượt tiếp theo: ${multiMode ? currentPlayerIsUser2 ? 'Khách' : 'Bạn' : 'Bạn'} - lượt ${multiMode ? currentPlayerIsUser2 ? roundUser2 + 1 : round + 1 : round + 1}`)
-        setTimerboxBottomStr(``)
-        handleReset()
-        break;
+        if (multiMode ? ((roundUser2) == roundNum) : ((round) == roundNum)) {
+          setAfterMatch(true)
+          console.log('after match');
+          break
+        } else {
+          setTimerboxHeaderStr(`Lượt tiếp theo: ${multiMode ? currentPlayerIsUser2 ? 'Khách' : 'Bạn' : 'Bạn'} - lượt ${multiMode ? currentPlayerIsUser2 ? roundUser2 + 1 : round + 1 : round + 1}`)
+          setTimerboxBottomStr(``)
+          handleReset()
+          break;
+        }
       default:
         setStep(0)
         break;
@@ -393,6 +401,66 @@ export default function Game() {
     }
   }
 
+  class AfterMatch extends React.Component<{}> {
+    shouldComponentUpdate(nextProps: Readonly<{}>, nextState: Readonly<{}>, nextContext: any): boolean {
+      if (round == roundNum) {
+        return true
+      } else return false
+    }
+
+    render(): React.ReactNode {
+      return (
+        <CLASS.ViewCol style={[styles.gap2vw, styles.marginVertical4vw, styles.paddingH6vw]}>
+          <CTEXT.NGT_Inter_DispLg_Bld>Kết quả cuối cùng: </CTEXT.NGT_Inter_DispLg_Bld>
+          <CLASS.ViewRowCenter style={[styles.w100, styles.gap4vw, styles.marginVertical2vw]}>
+            {
+              multiMode ? <CTEXT.NGT_Inter_HeaderLg_SemiBold style={[styles.flex1]}>Bạn: </CTEXT.NGT_Inter_HeaderLg_SemiBold> : null
+            }
+            <View style={[styles.paddingV3vw, styles.paddingH6vw, styles.borderRadius100, styles.alignSelfCenter, { backgroundColor: NGHIACOLOR.NghiaTransparentWhite30 }]}>
+              <CTEXT.NGT_Inter_DispLg_SemiBold color={NGHIACOLOR.NghiaBrand300}>{convertNumberToTime(totalTime || 0)}</CTEXT.NGT_Inter_DispLg_SemiBold>
+            </View>
+          </CLASS.ViewRowCenter>
+          {
+            multiMode ?
+              <CLASS.ViewRowCenter style={[styles.w100, styles.gap4vw, styles.marginVertical2vw]}>
+                <CTEXT.NGT_Inter_HeaderLg_SemiBold style={[styles.flex1]}>Khách: </CTEXT.NGT_Inter_HeaderLg_SemiBold>
+                <View style={[styles.paddingV3vw, styles.paddingH6vw, styles.borderRadius100, styles.alignSelfCenter, { backgroundColor: NGHIACOLOR.NghiaTransparentWhite30 }]}>
+                  <CTEXT.NGT_Inter_DispLg_SemiBold color={NGHIACOLOR.NghiaBrand300}>{convertNumberToTime(totalTimeUser2 || 0)}</CTEXT.NGT_Inter_DispLg_SemiBold>
+                </View>
+              </CLASS.ViewRowCenter>
+              : null
+          }
+
+          <CLASS.ViewRowBetweenCenter style={[styles.w100, styles.gap6vw, styles.marginTop2vw]}>
+            <CLASS.ViewGra700600 style={[styles.borderRadius100, styles.overflowHidden, styles.flex1]}>
+              <CLASS.RoundBtn title='Trở về' onPress={() => navigation.goBack()} textClass={CTEXT.NGT_Inter_HeaderMd_Bld} textColor='white' customStyle={[styles.w100, styles.justifyContentCenter, styles.paddingH4vw,]} />
+            </CLASS.ViewGra700600>
+
+            <CLASS.ViewGra700600 style={[styles.borderRadius100, styles.overflowHidden, styles.flex1]}>
+              <CLASS.RoundBtn title='Chơi lại' onPress={() => {
+                setCurrentPlayerIsUser2(false);
+                setTotalTime(0)
+                setTotalTimeUser2(0)
+                setRound(0)
+                setRoundUser2(0)
+                setStep(0)
+                setAfterMatch(false)
+                setDisplayTime(0)
+                setInspectTime(lvlData[CurrentCache.currentGameLvl][3] as number)
+                setTimerboxHeaderStr(`Scramble: ${multiMode ? `Bạn - ` : ``} lượt 1`)
+                setTimerboxBottomStr('')
+                setRoundTimeUser1(Array(roundNum).fill(0))
+                setRoundTimeUser2(Array(roundNum).fill(0))
+                setIsRunning(false)
+                setLastTime(0)
+              }} textClass={CTEXT.NGT_Inter_HeaderMd_Bld} textColor='white' customStyle={[styles.w100, styles.justifyContentCenter, styles.paddingH4vw,]} />
+            </CLASS.ViewGra700600>
+          </CLASS.ViewRowBetweenCenter>
+        </CLASS.ViewCol>
+      )
+    }
+  }
+
   return (
     <CLASS.SSBarWithSaveArea trans margin barContentStyle='light-content' bgColor={DefaultTheme.colors.background} barColor={DefaultTheme.colors.background}>
       {HEADER}
@@ -401,33 +469,35 @@ export default function Game() {
         <ScrollView style={[styles.flex1]}>
           <CLASS.ViewCol style={[styles.h100, styles.paddingH6vw, styles.gap4vw]}>
             {LEVELBEING}
-            <Pressable
-              disabled={step === 0}
-              onPressIn={() => stepFncControl()}
-              onPressOut={() => {
-                if (step === 2) stepFncControl();
-              }}
-            >
-              <CLASS.ViewColCenter style={[styles.marginTop4vw, styles.positionRelative, styles.overflowHidden, { backgroundColor: NGHIACOLOR.NghiaTransparentDark30, borderColor: step === 3 ? 'red' : NGHIACOLOR.NghiaBrand800, borderRadius: vw(3), borderWidth: step === 3 ? 3 : 1 }]}>
-                <Animated.View style={[styles.flex1, styles.w100, styles.h100, styles.positionAbsolute, { opacity: opacityAnimate }]} >
-                  <CLASS.ViewGra800700 style={[styles.w100, styles.h100]} />
-                </Animated.View>
-                <CLASS.ViewColCenter style={[styles.paddingH4vw, styles.paddingV6vw, styles.gap6vw]}>
-                  {TIMERBOX_HEADER}
-                  {
-                    step === 0 || step === 5 ? TIMERBOX_FOMULAR :
-                      <View style={[styles.paddingV3vw, styles.paddingH6vw, styles.borderRadius100, { backgroundColor: NGHIACOLOR.NghiaTransparentWhite30 }]}>
-                        <CTEXT.NGT_Inter_DispLg_SemiBold color={NGHIACOLOR.NghiaBrand300}>{colorFullFormat === 0 ? `${displayTime}"` : convertNumberToTime(displayTime || 0)}</CTEXT.NGT_Inter_DispLg_SemiBold>
-                      </View>
-                  }
+            {
+              afterMatch ? <AfterMatch /> :
+                <Pressable
+                  disabled={step === 0}
+                  onPressIn={() => stepFncControl()}
+                  onPressOut={() => {
+                    if (step === 2) stepFncControl();
+                  }}
+                >
+                  <CLASS.ViewColCenter style={[styles.marginTop4vw, styles.positionRelative, styles.overflowHidden, { backgroundColor: NGHIACOLOR.NghiaTransparentDark30, borderColor: step === 3 ? 'red' : NGHIACOLOR.NghiaBrand800, borderRadius: vw(3), borderWidth: step === 3 ? 3 : 1 }]}>
+                    <Animated.View style={[styles.flex1, styles.w100, styles.h100, styles.positionAbsolute, { opacity: opacityAnimate }]} >
+                      <CLASS.ViewGra800700 style={[styles.w100, styles.h100]} />
+                    </Animated.View>
+                    <CLASS.ViewColCenter style={[styles.paddingH4vw, styles.paddingV6vw, styles.gap6vw]}>
+                      {TIMERBOX_HEADER}
+                      {
+                        step === 0 || step === 5 ? TIMERBOX_FOMULAR :
+                          <View style={[styles.paddingV3vw, styles.paddingH6vw, styles.borderRadius100, { backgroundColor: NGHIACOLOR.NghiaTransparentWhite30 }]}>
+                            <CTEXT.NGT_Inter_DispLg_SemiBold color={NGHIACOLOR.NghiaBrand300}>{colorFullFormat === 0 ? `${displayTime}"` : convertNumberToTime(displayTime || 0)}</CTEXT.NGT_Inter_DispLg_SemiBold>
+                          </View>
+                      }
 
-                  <TimerBoxBottomCompo round={round} />
-                </CLASS.ViewColCenter>
-                <Animated.View style={{ height: timerExtraPaddingAnimate }} />
-              </CLASS.ViewColCenter>
+                      <TimerBoxBottomCompo round={round} />
+                    </CLASS.ViewColCenter>
+                    <Animated.View style={{ height: timerExtraPaddingAnimate }} />
+                  </CLASS.ViewColCenter>
 
-            </Pressable>
-
+                </Pressable>
+            }
             <View style={[styles.padding4vw, componentStyle.borderBrand800]}>
               {BESTRESULT}
               <RoundResult round={round} />
