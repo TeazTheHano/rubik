@@ -9,7 +9,7 @@ import * as CLASS from '@/assets/Class';
 import * as CTEXT from '@/assets/CustomText';
 import { CommonActions, DefaultTheme, useNavigation } from '@react-navigation/native';
 import { MatchHistoryFormat } from '@/data/interfaceFormat';
-import { getStorageList } from '@/data/storageFunc';
+import { getStorageList, saveStorageItem } from '@/data/storageFunc';
 import { RootContext } from '@/data/store';
 import { lvlData } from '@/data/factoryData';
 
@@ -28,6 +28,7 @@ export default function Game() {
   const [match, setMatch] = React.useState<MatchHistoryFormat>();
 
   const [afterMatch, setAfterMatch] = React.useState(false)
+  const [startPlaying, setStartPlaying] = React.useState<number>(0)
 
   const [roundNum, setRoundNum] = React.useState<12 | 5>(CurrentCache.currentGameLvl === 2 ? 12 : 5);
 
@@ -87,6 +88,7 @@ export default function Game() {
   const handleStartStop = useCallback(() => {
     if (!isRunning) {
       setLastTime(performance.now()); // Update lastTime only when starting
+      if (!startPlaying) setStartPlaying(performance.now())
     }
     setIsRunning(!isRunning);
   }, [isRunning]);
@@ -207,6 +209,25 @@ export default function Game() {
   }
 
   const stepFncControl = useCallback((forceStep?: number) => {
+
+    const isLastRound = multiMode ? (roundUser2 + 1) === roundNum && currentPlayerIsUser2 : (round + 1) === roundNum;
+    const nextRound = multiMode
+      ? (currentPlayerIsUser2 ? (round + 1) : (roundUser2 + 1))
+      : (round + 2);
+    const playerLabel = multiMode
+      ? (currentPlayerIsUser2 ? 'của Bạn' : 'của Khách')
+      : '';
+
+    const readyMessage = `Chạm tay của bạn vào Vùng này khi sẵn sàng với lượt chơi thứ ${nextRound} ${playerLabel}`;
+    const resultMessage = `Chạm để xem kết quả`;
+
+    const nextPlayerHeader = multiMode ? (currentPlayerIsUser2 ? 'Khách' : 'Bạn') : 'Bạn';
+    const nextRoundHeader = multiMode ? (currentPlayerIsUser2 ? roundUser2 + 1 : round + 1) : round + 1;
+
+    const currentRoundHeader = multiMode ? (currentPlayerIsUser2 ? roundUser2 + 1 : round + 1) : round + 1;
+    const playerLabelHeader = multiMode ? (currentPlayerIsUser2 ? 'của Khách' : 'của Bạn') : '';
+
+
     let localStep = step
     console.log('stepfnccontrol ' + localStep);
     console.log(`totalTime `, totalTime, totalTimeUser2);
@@ -253,8 +274,8 @@ export default function Game() {
         setCountDownEnded(false)
         handleResult()
         // content
-        setTimerboxHeaderStr(`Kết quả lượt ${multiMode ? currentPlayerIsUser2 ? roundUser2 + 1 : round + 1 : round + 1} ${multiMode ? currentPlayerIsUser2 ? 'của Khách' : 'của Bạn' : ''}`)
-        setTimerboxBottomStr(!(multiMode ? ((roundUser2 + 1) == roundNum) : ((round + 1) == roundNum)) ? `Chạm tay của bạn vào Vùng này khi sẵn sàng với lượt chơi thứ ${multiMode ? currentPlayerIsUser2 ? (round + 1) : (roundUser2 + 1) : (round + 2)} ${multiMode ? !currentPlayerIsUser2 ? 'của Khách' : 'của Bạn' : ''}` : `Chạm để xem kết quả`)
+        setTimerboxHeaderStr(`Kết quả lượt ${currentRoundHeader} ${playerLabelHeader}`);
+        setTimerboxBottomStr(isLastRound ? resultMessage : readyMessage);
         break;
       case 4:
         if (multiMode ? ((roundUser2) == roundNum) : ((round) == roundNum)) {
@@ -262,7 +283,7 @@ export default function Game() {
           console.log('after match');
           break
         } else {
-          setTimerboxHeaderStr(`Lượt tiếp theo: ${multiMode ? currentPlayerIsUser2 ? 'Khách' : 'Bạn' : 'Bạn'} - lượt ${multiMode ? currentPlayerIsUser2 ? roundUser2 + 1 : round + 1 : round + 1}`)
+          setTimerboxHeaderStr(`Lượt tiếp theo: ${nextPlayerHeader} - lượt ${nextRoundHeader}`);
           setTimerboxBottomStr(``)
           handleReset()
           break;
@@ -401,14 +422,24 @@ export default function Game() {
     }
   }
 
+
+  function AfterMatchSaveToStorage() {
+    let data: MatchHistoryFormat = {
+      date: new Date(),
+      time: performance.now() - startPlaying,
+      lvl: ['Beginner', 'Intermediate', 'Expert'][CurrentCache.currentGameLvl] as 'Beginner' | 'Intermediate' | 'Expert',
+      rounds: multiMode ? [...roundTimeUser1, ...roundTimeUser2] : roundTimeUser1,
+      result: totalTime
+    }
+    saveStorageItem('match', data, `a${Math.round(Math.random() * 20)}-${new Date().toUTCString()}`)
+  }
   class AfterMatch extends React.Component<{}> {
     shouldComponentUpdate(nextProps: Readonly<{}>, nextState: Readonly<{}>, nextContext: any): boolean {
-      if (round == roundNum) {
-        return true
-      } else return false
+      return afterMatch
     }
 
     render(): React.ReactNode {
+      AfterMatchSaveToStorage()
       return (
         <CLASS.ViewCol style={[styles.gap2vw, styles.marginVertical4vw, styles.paddingH6vw]}>
           <CTEXT.NGT_Inter_DispLg_Bld>Kết quả cuối cùng: </CTEXT.NGT_Inter_DispLg_Bld>
@@ -453,6 +484,7 @@ export default function Game() {
                 setRoundTimeUser2(Array(roundNum).fill(0))
                 setIsRunning(false)
                 setLastTime(0)
+                setStartPlaying(0)
               }} textClass={CTEXT.NGT_Inter_HeaderMd_Bld} textColor='white' customStyle={[styles.w100, styles.justifyContentCenter, styles.paddingH4vw,]} />
             </CLASS.ViewGra700600>
           </CLASS.ViewRowBetweenCenter>

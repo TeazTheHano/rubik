@@ -15,15 +15,9 @@ export interface UserFormat {
 
 export interface MatchHistoryFormat {
     date: Date
-    time: {
-        start: number,
-        end: number
-    }
+    time: number
     lvl: 'Beginner' | 'Intermediate' | 'Expert'
-    rounds: {
-        start: number,
-        end: number
-    }[]
+    rounds: number[]
     result: number
 }
 

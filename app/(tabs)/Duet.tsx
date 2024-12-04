@@ -189,13 +189,16 @@ export default function Duet() {
   return (
     <CLASS.SSBarWithSaveArea trans margin barContentStyle='light-content' bgColor={DefaultTheme.colors.background} barColor={DefaultTheme.colors.background}>
       <CLASS.ViewRowBetweenCenter style={[styles.paddingV2vw, styles.alignItemsStart, styles.paddingH4vw, styles.paddingBottom4vw]}>
-        <View>
-          <CTEXT.NGT_Inter_DispMd_SemiBold>Đấu cặp</CTEXT.NGT_Inter_DispMd_SemiBold>
-          <CLASS.ViewRowStartCenter style={[styles.gap2vw]}>
-            {avatarComponet(vw(6), vw(6))}
-            <CTEXT.NGT_Inter_BodyMd_Med>Luyện tập cùng bạn bè</CTEXT.NGT_Inter_BodyMd_Med>
-          </CLASS.ViewRowStartCenter>
-        </View>
+        <CLASS.ViewRowStartCenter style={[styles.alignItemsCenter]}>
+          <Image source={require('@/assets/photos/inappLogo.jpg')} style={[styles.w10vw, styles.h10vw, styles.borderRadius2vw, styles.overflowHidden, styles.margin2vw] as ImageStyle} resizeMethod='resize' resizeMode='contain' />
+          <View>
+            <CTEXT.NGT_Inter_DispMd_SemiBold>Đấu cặp</CTEXT.NGT_Inter_DispMd_SemiBold>
+            <CLASS.ViewRowStartCenter style={[styles.gap2vw]}>
+              {avatarComponet(vw(6), vw(6))}
+              <CTEXT.NGT_Inter_BodyMd_Med>Luyện tập cùng bạn bè</CTEXT.NGT_Inter_BodyMd_Med>
+            </CLASS.ViewRowStartCenter>
+          </View>
+        </CLASS.ViewRowStartCenter>
         <CLASS.ViewRowStartCenter style={[styles.borderRadius2vw, styles.gap1vw, styles.paddingV1vw, styles.paddingRight4vw, styles.paddingLeft2vw, styles.border1, { backgroundColor: NGHIACOLOR.NghiaTransparentDark30, borderColor: NGHIACOLOR.NghiaBrand800 }]}>
           <Image style={[{ width: vw(7), height: vw(7) }]} source={require('@/assets/photos/GoldStar.png')} />
           <CTEXT.NGT_Inter_BodyLg_Med>{CurrentCache.user.star}</CTEXT.NGT_Inter_BodyLg_Med>

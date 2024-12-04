@@ -198,52 +198,52 @@ export function formatNumber(num: number, changeToChar: boolean = true) {
  * @param saveUser 
  * @returns 
  */
-export async function LoginWithFirebaseHandle(
-    email: string,
-    password: string,
-    navigation: any,
-    signInWithEmailAndPassword: (auth: any, email: string, password: string) => Promise<any>,
-    auth: any,
-    dispatch: (action: any) => void,
-    currentSetUser: (user: any) => any,
-    saveUserToLocal: (user: any) => void
-): Promise<void | boolean> {
-    email = email.trim();
-    password = password.trim();
-    if (email === '' || password === '') {
-        Alert.alert('Vui lòng điền đủ thông tin');
-        return false;
-    }
-    try {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        const { user } = userCredential;
+// export async function LoginWithFirebaseHandle(
+//     email: string,
+//     password: string,
+//     navigation: any,
+//     signInWithEmailAndPassword: (auth: any, email: string, password: string) => Promise<any>,
+//     auth: any,
+//     dispatch: (action: any) => void,
+//     currentSetUser: (user: any) => any,
+//     saveUserToLocal: (user: any) => void
+// ): Promise<void | boolean> {
+//     email = email.trim();
+//     password = password.trim();
+//     if (email === '' || password === '') {
+//         Alert.alert('Vui lòng điền đủ thông tin');
+//         return false;
+//     }
+//     try {
+//         const userCredential = await signInWithEmailAndPassword(auth, email, password);
+//         const { user } = userCredential;
 
-        if (user.email) {
-            const userObj: FORMATDATA.UserFormat = {
-                email: user.email,
-                name: user.displayName ?? user.email,
-            };
+//         if (user.email) {
+//             const userObj: FORMATDATA.UserFormat = {
+//                 email: user.email,
+//                 name: user.displayName ?? user.email,
+//             };
 
-            const userFormat = userObj as (FORMATDATA.UserFormat & { imgAddress?: string });
-            userFormat.imgAddress = user.photoURL ?? '';
+//             const userFormat = userObj as (FORMATDATA.UserFormat & { imgAddress?: string });
+//             userFormat.imgAddress = user.photoURL ?? '';
 
-            saveUserToLocal(userObj);
-            dispatch(currentSetUser(userObj));
+//             saveUserToLocal(userObj);
+//             dispatch(currentSetUser(userObj));
 
-            if (navigation) {
-                navigation.navigate('BottomTab');
-            }
-            return true;
-        } else {
-            Alert.alert('Email hoặc mật khẩu bạn nhập chưa đúng');
-            return false;
-        }
-    } catch (error) {
-        console.log(error);
-        Alert.alert('Email hoặc mật khẩu bạn nhập chưa đúng');
-        return false;
-    }
-}
+//             if (navigation) {
+//                 navigation.navigate('BottomTab');
+//             }
+//             return true;
+//         } else {
+//             Alert.alert('Email hoặc mật khẩu bạn nhập chưa đúng');
+//             return false;
+//         }
+//     } catch (error) {
+//         console.log(error);
+//         Alert.alert('Email hoặc mật khẩu bạn nhập chưa đúng');
+//         return false;
+//     }
+// }
 
 
 /**
