@@ -180,7 +180,10 @@ export default function Game() {
 
   const handleResult = () => {
     const sumRoundTime = (roundTime: number[], round: number) => {
-      return roundTime.slice(1, round).reduce((acc, time) => acc + time, 0) / (round - 1);
+      const sortedRoundTime = [...roundTime].sort((a, b) => a - b);
+      console.log('sortedRoundTime', sortedRoundTime , '== round', round);
+      
+      return round >= 2 ? sortedRoundTime.slice(1, sortedRoundTime.length - 1).reduce((acc, time) => acc + time, 0) / (round - 2) : 0;
     }
     if (multiMode) {
       if (currentPlayerIsUser2) {
