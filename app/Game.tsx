@@ -12,6 +12,7 @@ import { MatchHistoryFormat } from '@/data/interfaceFormat';
 import { getStorageList, saveStorageItem } from '@/data/storageFunc';
 import { RootContext } from '@/data/store';
 import { lvlData } from '@/data/factoryData';
+import { Colors } from '@/constants/Colors';
 
 export default function Game() {
   const navigation = useNavigation();
@@ -494,7 +495,7 @@ export default function Game() {
   }
 
   return (
-    <CLASS.SSBarWithSaveArea trans margin barContentStyle='light-content' bgColor={DefaultTheme.colors.background} barColor={DefaultTheme.colors.background}>
+    <CLASS.SSBarWithSaveArea trans margin barContentStyle='light-content' bgColor={Colors.dark.background} barColor={Colors.dark.background}>
       {HEADER}
 
       <View style={[styles.flex1]}>

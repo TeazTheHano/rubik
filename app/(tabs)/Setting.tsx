@@ -6,11 +6,12 @@ import { MatchHistoryFormat } from '@/data/interfaceFormat'
 import styles from '@/assets/stylesheet'
 import { CommonActions, DefaultTheme, useNavigation } from '@react-navigation/native';
 import * as CTEXT from '@/assets/CustomText';
+import { Colors } from '@/constants/Colors'
 
 export default function Setting() {
   const navigation = useNavigation()
   return (
-    <CLASS.SSBarWithSaveArea trans margin barContentStyle='light-content' bgColor={DefaultTheme.colors.background} barColor={DefaultTheme.colors.background}>
+    <CLASS.SSBarWithSaveArea trans margin barContentStyle='light-content' bgColor={Colors.dark.background} barColor={Colors.dark.background}>
       <Image source={require('@/assets/photos/inappLogo.jpg')} style={[styles.w20vw, styles.h20vw, styles.alignSelfCenter, styles.borderRadius2vw, styles.overflowHidden, styles.margin4vw] as ImageStyle} resizeMethod='resize' resizeMode='contain' />
       <CLASS.ViewGra700600 style={[styles.borderRadius100, styles.overflowHidden, styles.w90, styles.alignSelfCenter]}>
         <CLASS.RoundBtn title='Đặt lại ứng dụng' onPress={() => {

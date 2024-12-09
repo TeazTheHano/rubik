@@ -12,6 +12,7 @@ import { getStorageItem, getStorageList, saveStorageItem } from '@/data/storageF
 import { currentSaveGameLvl, currentSaveMultiMode, RootContext } from '@/data/store'
 import { SvgXml } from 'react-native-svg'
 import { lvlData } from '@/data/factoryData'
+import { Colors } from '@/constants/Colors'
 
 export default function Duet() {
   const navigation = useNavigation()
@@ -187,7 +188,7 @@ export default function Duet() {
   }
 
   return (
-    <CLASS.SSBarWithSaveArea trans margin barContentStyle='light-content' bgColor={DefaultTheme.colors.background} barColor={DefaultTheme.colors.background}>
+    <CLASS.SSBarWithSaveArea trans margin barContentStyle='light-content' bgColor={Colors.dark.background} barColor={Colors.dark.background}>
       <CLASS.ViewRowBetweenCenter style={[styles.paddingV2vw, styles.alignItemsStart, styles.paddingH4vw, styles.paddingBottom4vw]}>
         <CLASS.ViewRowStartCenter style={[styles.alignItemsCenter]}>
           <Image source={require('@/assets/photos/inappLogo.jpg')} style={[styles.w10vw, styles.h10vw, styles.borderRadius2vw, styles.overflowHidden, styles.margin2vw] as ImageStyle} resizeMethod='resize' resizeMode='contain' />

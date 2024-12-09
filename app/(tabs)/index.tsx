@@ -10,6 +10,7 @@ import { DefaultTheme, useNavigation } from '@react-navigation/native'
 import { MatchHistoryFormat } from '@/data/interfaceFormat'
 import { getStorageItem, getStorageList, getUser } from '@/data/storageFunc'
 import { currentSaveGameLvl, currentSaveMultiMode, currentSetUser, RootContext } from '@/data/store'
+import { Colors } from '@/constants/Colors'
 
 export default function index() {
   const navigation = useNavigation()
@@ -47,7 +48,7 @@ export default function index() {
   ]
 
   return (
-    <CLASS.SSBarWithSaveArea trans margin barContentStyle='light-content' bgColor={DefaultTheme.colors.background} barColor={DefaultTheme.colors.background}>
+    <CLASS.SSBarWithSaveArea trans margin barContentStyle='light-content' bgColor={Colors.dark.background} barColor={Colors.dark.background}>
       <ScrollView style={[styles.paddingH4vw]}>
         <CLASS.ViewRowBetweenCenter style={[styles.paddingV2vw, styles.alignItemsStart]}>
           <CLASS.ViewRowStartCenter style={[styles.alignItemsCenter]}>

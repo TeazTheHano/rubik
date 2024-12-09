@@ -1,7 +1,7 @@
 import { View, Text, ScrollView, Image, TouchableOpacity, Pressable, SafeAreaView, ImageStyle, } from 'react-native'
 import Animated, { Easing, useSharedValue, withSpring } from 'react-native-reanimated'
 import React, { useEffect, useRef } from 'react'
-import { componentStyle, NGHIACOLOR } from '@/assets/componentStyleSheet'
+import clrStyle, { componentStyle, NGHIACOLOR } from '@/assets/componentStyleSheet'
 import styles, { vw } from '@/assets/stylesheet'
 import { avatarComponet, convertNumberToTime, ListGen, marginBottomForScrollView } from '@/assets/component'
 import * as ICON from '@/assets/svgXml'
@@ -55,8 +55,8 @@ export default function Guide() {
   const PLLrender = React.useMemo(() => renderFormula(PLLfomular), [PLLfomular]);
 
   return (
-    <SafeAreaView style={[styles.flex1]}>
-      <View style={[styles.paddingH6vw, styles.flexColStartCenter, styles.flex1]}>
+    <SafeAreaView style={[styles.flex1, {backgroundColor:clrStyle.bgMain}]}>
+      <View style={[styles.paddingH6vw, styles.paddingTop2vw, styles.flexColStartCenter, styles.flex1]}>
 
 
         <CTEXT.NGT_Inter_HeaderLg_Bld style={[styles.textCenter, styles.paddingV2vw]}>Hướng dẫn</CTEXT.NGT_Inter_HeaderLg_Bld>

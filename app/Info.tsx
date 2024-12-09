@@ -11,6 +11,7 @@ import { MatchHistoryFormat, UserFormat } from '@/data/interfaceFormat'
 import { getStorageList, saveStorageItem } from '@/data/storageFunc'
 import { currentSaveGameLvl, currentSetUser, RootContext } from '@/data/store'
 import { ImageStyle } from 'react-native'
+import { Colors } from '@/constants/Colors'
 
 export default function Info() {
   const navigation = useNavigation();
@@ -35,7 +36,7 @@ export default function Info() {
     }
   }
   return (
-    <CLASS.SSBarWithSaveArea trans margin barContentStyle='light-content' bgColor={DefaultTheme.colors.background} barColor={DefaultTheme.colors.background}>
+    <CLASS.SSBarWithSaveArea trans margin barContentStyle='light-content' bgColor={Colors.dark.background} barColor={Colors.dark.background}>
       <CLASS.ViewColEvenlyCenter style={[styles.flex1, styles.w100, styles.paddingH6vw]}>
         <Image source={require('@/assets/photos/inappLogo.jpg')} style={[styles.w20vw, styles.h20vw, styles.borderRadius2vw, styles.overflowHidden, styles.margin2vw] as ImageStyle} resizeMethod='resize' resizeMode='contain' />
         <CLASS.BoardingInput
