@@ -179,38 +179,30 @@ export default function Game() {
   // END OF OPACITY ANIMATOR <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
   const handleResult = () => {
-    const sumRoundTime = (roundTime: number[], round: number) => {
-      const sortedRoundTime = [...roundTime].sort((a, b) => a - b);
-      console.log('sortedRoundTime', sortedRoundTime , '== round', round);
-      
-      return round >= 2 ? sortedRoundTime.slice(1, sortedRoundTime.length - 1).reduce((acc, time) => acc + time, 0) / (round - 2) : 0;
-    }
+    const updateRoundTimeAndTotal = (roundTime: number[], round: number, setTotalTime: (time: number) => void, setRoundTime: (newRoundTime: number[]) => void) => {
+      const newRoundTime = [...roundTime];
+      newRoundTime[round] = displayTime;
+      setRoundTime(newRoundTime);
+
+      const sortedTimes = newRoundTime.slice(0, round + 1).sort((a, b) => a - b);
+      const totalTime = round >= 2 ? sortedTimes.slice(1, round).reduce((acc, time) => acc + time, 0) / (round - 1) : 0;
+      setTotalTime(totalTime);
+    };
+
     if (multiMode) {
       if (currentPlayerIsUser2) {
-        let newRoundTimeUser2 = [...roundTimeUser2];
-        newRoundTimeUser2[roundUser2] = displayTime;
-        console.log(newRoundTimeUser2);
-        setRoundTimeUser2(newRoundTimeUser2);
-        setTotalTimeUser2(sumRoundTime(roundTimeUser2, roundUser2) || 0);
+        updateRoundTimeAndTotal(roundTimeUser2, roundUser2, setTotalTimeUser2, setRoundTimeUser2);
         setRoundUser2(prev => prev + 1);
       } else {
-        let newRoundTimeUser1 = [...roundTimeUser1];
-        newRoundTimeUser1[round] = displayTime;
-        console.log(newRoundTimeUser1, " - " + round);
-        setRoundTimeUser1(newRoundTimeUser1);
-        setTotalTime(sumRoundTime(roundTimeUser1, round) || 0);
+        updateRoundTimeAndTotal(roundTimeUser1, round, setTotalTime, setRoundTimeUser1);
         setRound(prev => prev + 1);
       }
       setCurrentPlayerIsUser2(!currentPlayerIsUser2);
     } else {
-      let newRoundTimeUser1 = [...roundTimeUser1];
-      newRoundTimeUser1[round] = displayTime;
-      console.log(newRoundTimeUser1, " - " + round);
-      setRoundTimeUser1(newRoundTimeUser1);
-      setTotalTime(sumRoundTime(roundTimeUser1, round) || 0);
+      updateRoundTimeAndTotal(roundTimeUser1, round, setTotalTime, setRoundTimeUser1);
       setRound(prev => prev + 1);
     }
-  }
+  };
 
   const stepFncControl = useCallback((forceStep?: number) => {
 
@@ -233,7 +225,6 @@ export default function Game() {
 
 
     let localStep = step
-    console.log('stepfnccontrol ' + localStep);
     console.log(`totalTime `, totalTime, totalTimeUser2);
 
     if (forceStep) {
@@ -297,7 +288,6 @@ export default function Game() {
         break;
     }
     localStep > 4 ? setStep(0) : setStep(localStep + 1);
-    console.log('after stepfnccontrol ' + localStep);
 
   }, [step, inspectTime, displayTime, handleStartStop, memoizedCounter, stopOpacityAnimatorBlinker, handleOpacityAnimation]);
 
@@ -369,7 +359,7 @@ export default function Game() {
     )
   }, [])
 
-  const BLUECLOCKICON = useMemo(() => { return ICON.greenClock(vw(8), vw(8)) }, [])
+  const BLUECLOCKICON = useMemo(() => { return <Image source={require('@/assets/photos/clock.png')} resizeMethod='resize' resizeMode='contain' style={[{ width: vw(6), height: vw(6) }]} /> }, [])
 
   class RoundResult extends React.Component<{ round: number }> {
     shouldComponentUpdate(nextProps: Readonly<{ round: number }>, nextState: Readonly<{}>, nextContext: any): boolean {
@@ -402,7 +392,7 @@ export default function Game() {
                   {roundTimeUser2.map((item, index) => (
                     <CLASS.ViewColCenter key={index} style={[styles.padding2vw, styles.borderRadius10, styles.gap2vw, styles.w20, { backgroundColor: roundUser2 === index && currentPlayerIsUser2 ? NGHIACOLOR.NghiaTransparentWhite30 : undefined }]}>
                       <CTEXT.NGT_Inter_BodyLg_Med>{index + 1}</CTEXT.NGT_Inter_BodyLg_Med>
-                      <View pointerEvents="none">{roundNum === 12 ? null : ICON.greenClock(vw(8), vw(8))}</View>
+                      <View pointerEvents="none">{roundNum === 12 ? null : BLUECLOCKICON}</View>
                       <CLASS.ViewRowCenter style={[styles.border1white, styles.w100, styles.paddingH1vw, styles.borderRadius2vw, { backgroundColor: index === 1 ? 'white' : index === roundTimeUser2.length - 1 ? NGHIACOLOR.NghiaBrand600 : undefined, borderWidth: index === roundTimeUser2.length - 1 ? 0 : 1 }]}>
                         <CTEXT.NGT_Inter_BodyLg_Med color={index === 1 ? NGHIACOLOR.NghiaBrand600 : 'white'}>{(Math.round(item) / 1000).toFixed(1)}s</CTEXT.NGT_Inter_BodyLg_Med>
                       </CLASS.ViewRowCenter>

@@ -492,6 +492,31 @@ export function avatarComponet(w: number = vw(12), h: number = vw(12), bgColor?:
     )
 }
 
-export function convertNumberToTime(length: number, hideHour?: boolean, hideMinute?: boolean, hideSec?: boolean, hideMili?: boolean, is1digiStart?: boolean) {
-    return `${hideHour ? '' : `${Math.floor(length / 3600000)}:`}${hideMinute ? '' : `${!is1digiStart ? `0` : ``}${Math.floor((length % 3600000) / 60000)}`.slice(-2)}:${hideSec ? '' : `${!is1digiStart ? `0` : ``}${Math.floor((length % 60000) / 1000)}`.slice(-2)}${hideMili ? '' : `.${`00${length % 1000}`.slice(-3)}`}`
+export function convertNumberToTime(
+    length: number,
+    {
+        hideHours = false,
+        hideMinutes = false,
+        hideSeconds = false,
+        hideMilliseconds = false,
+        isOneDigitStart = false,
+    }: {
+        hideHours?: boolean,
+        hideMinutes?: boolean,
+        hideSeconds?: boolean,
+        hideMilliseconds?: boolean,
+        isOneDigitStart?: boolean,
+    } = {}
+): string {
+    const hours = Math.floor(length / 36e5);
+    const minutes = Math.floor((length % 36e5) / 6e4);
+    const seconds = Math.floor((length % 6e4) / 1e3);
+    const milliseconds = length % 1e3;
+
+    return [
+        hideHours ? '' : `${isOneDigitStart && hours < 10 ? '' : `0${hours}`.slice(-2)}`,
+        hideMinutes ? '' : `${minutes < 10 && isOneDigitStart ? '' : `0${minutes}`.slice(-2)}`,
+        hideSeconds ? '' : `${seconds < 10 && isOneDigitStart ? '' : `0${seconds}`.slice(-2)}`,
+        hideMilliseconds ? '' : `${`${milliseconds}`.slice(0, 2)}`,
+    ].join(':').replace(/:\s*$/, '');
 }
